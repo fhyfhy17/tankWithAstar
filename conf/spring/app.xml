@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="context" class="com.ourpalm.tank.app.GameContext" autowire="byName">
+		<property name="loginCheckUrl" value="${user.center.check.url}"/>
+		<property name="txloginCheckUrl" value="${tx.user.center.check.url}"/>
+		<property name="activecodeCallbackUrl" value="${game.activecode.callback.url}"/>
+		<property name="checkLoginControl" value="${login.check.control}"/>
+		<property name="gameTest" value="${game.test}"/>
+		<property name="activeShow" value="${active.show}"/>
+		<property name="clientVersion" value="${client.version}"/>
+		<property name="serverPf" value="${login.server.pf}"/>
+		<property name="txAppId" value="${tx.app.id}"/>
+		<property name="txAppKey" value="${tx.app.key}"/>
+		<property name="reportUrl" value="${report.url}"/>
+		<property name="reportNeed" value="${report.need}"/>
+		<property name="txBlueUrl" value="${tx.blue.vip.url}"/>
+		<property name="txYellowUrl" value="${tx.yellow.vip.url}"/>
+		<property name="txQQUrl" value="${tx.qq.url}"/>	
+		<property name="txIsLoginUrl" value="${tx.is.login.url}"/>	
+		<property name="txTestUserInfoOpen" value="${tx.test.user.info.open}"/>
+		<property name="txTestBlueUserInfo" value="${tx.test.blue.user.info}"/>
+		<property name="txTestYellowUserInfo" value="${tx.test.yellow.user.info}"/>
+		<property name="txTestNoBlueUserInfo" value="${tx.test.no.blue.user.info}"/>
+		<property name="txTestNoYellowUserInfo" value="${tx.test.no.yellow.user.info}"/>
+		<property name="txTestQQUserInfo" value="${tx.test.qq.user.info}"/>
+		<property name="txPayPrepareUrl" value="${tx.pay.prepare.url}"/>
+		<property name="preseason" value="${game.preseason}"/>
+		<property name="battleNew" value="${game.battleNew}"/>
+		<property name="mapId" value="${game.mapId}"/>
+		
+		<property name="mysql_user" value="${mysql_user}"/>
+		<property name="mysql_password" value="${mysql_password}"/>
+		<property name="mysql_devMode" value="${mysql_devMode}"/>
+		<property name="mysql_jdbcUrl_storeName" value="${mysql_jdbcUrl_storeName}"/>
+		<property name="mysql_jdbcUrl_Ip" value="${mysql_jdbcUrl_Ip}"/>
+		
+		
+		
+	</bean>
+
+	<bean id="idFactory" class="com.ourpalm.tank.app.id.IdFactoryImpl">
+		<property name="jedisClient" ref="jedisClient" />
+	</bean>
+	
+	<bean id="onlineCenter" class="com.ourpalm.tank.app.online.OnlineCenterImpl">
+		<property name="userDAO" ref="userDAO"/>
+	</bean>
+	
+	<bean id="userApp" class="com.ourpalm.tank.app.user.UserAppImpl">
+		<property name="userDAO" ref="userDAO"/>
+		<property name="userAttrDao" ref="userAttrDao"/>
+	</bean>
+	
+	<bean id="tankApp" class="com.ourpalm.tank.app.tank.TankAppImpl">
+		<property name="roleTankDao" ref="roleTankDao"/>
+		<property name="tankDevelopDao" ref="tankDevelopDao"/>
+		
+		<property name="localPort" value="${socket.proxy.port}"/>
+		<property name="versionCode" value="${version.code}"/>
+	</bean>
+	
+	<bean id="matchApp" class="com.ourpalm.tank.app.match.MatchAppImpl">
+		<property name="matchDao" ref="matchDao"/>
+	</bean>
+	
+	<bean id="mapApp" class="com.ourpalm.tank.app.map.MapAppImpl">
+		<property name="mapDataPath" value="${map.data.dir}"/>
+		<property name="aiPointPah" value="${map.ai.point.dir}"/>
+		<property name="mapHeightPath" value="${map.height.dir}"/>
+		<property name="mapThreadHandlerCount" value="${map.server.handlerCount}"/>
+		<property name="aiThreadHandlerCount" value="${ai.server.handlerCount}"/>
+	</bean>
+	
+	<bean id="battleApp" class="com.ourpalm.tank.app.battle.BattleAppImpl">
+		<property name="roleWarInfoDao" ref="roleWarInfoDao"/>
+	</bean>
+	
+	<bean id="goodsApp" class="com.ourpalm.tank.app.goods.GoodsAppImpl">
+		<property name="packageDao" ref="packageDao"/>
+	</bean>
+	
+	<bean id="shopApp" class="com.ourpalm.tank.app.shop.ShopAppImpl" >
+		<property name="shopRecordDao" ref="shopRecordDao"/>
+	</bean>
+	
+	<bean id="vipShopApp" class="com.ourpalm.tank.app.shop.VipShopAppImpl" >
+		<property name="shopRecordDao" ref="vipShopRecordDao"/>
+	</bean>
+	
+	<bean id="userAttrApp" class="com.ourpalm.tank.app.user.UserAttrAppImpl" >
+		<property name="userAttrDao" ref="userAttrDao"/>
+	</bean>
+	
+	<bean id="roleArmyTitleApp" class="com.ourpalm.tank.app.title.RoleArmyTitleAppImpl">
+		<property name="seasonMatchDao" ref="seasonMatchDao"/>
+	</bean>
+	
+	<bean id="questTriggerApp" class="com.ourpalm.tank.app.quest.QuestTriggerAppImpl" />
+
+	<bean id="questApp" class="com.ourpalm.tank.app.quest.QuestAppImpl" >
+		<property name="questDao" ref="questDao"/>
+	</bean>
+	
+	<bean id="achievementApp" class="com.ourpalm.tank.app.achievement.AchievementAppImpl" >
+		<property name="achievementDao" ref="achievementDao"/>
+	</bean>
+	
+	<bean id="buffApp" class="com.ourpalm.tank.app.buff.BuffAppImpl" />
+
+	<bean id="medalApp" class="com.ourpalm.tank.app.member.MedalAppImpl" />
+	
+	<bean id="memberApp" class="com.ourpalm.tank.app.member.MemberAppImpl" >
+		<property name="memberAttrEvaluate" ref="memberAttrEvaluate" />
+		<property name="roleMemberDao" ref="roleMemberDao" />
+		<property name="roleLotteryDao" ref="roleLotteryDao"/>
+		<property name="roleUseMemberDao" ref="roleUseMemberDao"/>
+	</bean>
+
+	<bean id="memberAttrEvaluate" class="com.ourpalm.tank.app.member.MemberAttrEvaluateImpl" />
+
+	<bean id="skillApp" class="com.ourpalm.tank.app.skill.SkillAppImpl"/>
+	
+	<bean id="corpsApp" class="com.ourpalm.tank.app.corps.CorpsAppImpl">
+		<property name="corpsDao" ref="corpsDao"/>
+	</bean>
+
+	<bean id="gatewayManagerApp" class="com.ourpalm.core.node.manager.RemoteManagerAppImpl">
+		<property name="zkClient" ref="zkclient"/>
+		<property name="registerServerNodesName" value="${gateway.server.register.node}"/>
+	</bean>
+	
+	<bean id="matchManagerApp" class="com.ourpalm.core.node.manager.RemoteManagerAppImpl">
+		<property name="zkClient" ref="zkclient"/>
+		<property name="registerServerNodesName" value="${match.server.register.node}"/>
+	</bean>
+	
+	<bean id="platformManagerApp" class="com.ourpalm.core.node.manager.RemoteManagerAppImpl">
+		<property name="zkClient" ref="zkclient"/>
+		<property name="registerServerNodesName" value="${platform.server.register.node}"/>
+	</bean>
+	
+	<bean id="gmManagerApp" class="com.ourpalm.core.node.manager.RemoteManagerAppImpl">
+		<property name="zkClient" ref="zkclient"/>
+		<property name="registerServerNodesName" value="${gm.server.register.node}"/>
+	</bean>
+	
+	<bean id="friendApp" class="com.ourpalm.tank.app.friend.FriendAppImpl">
+		<property name="friendDao" ref="friendDao"/>
+	</bean>
+	<bean id="mailApp" class="com.ourpalm.tank.app.mail.MailAppImpl">
+		<property name="mailDao" ref="mailDao"/>
+	</bean>
+	
+	<bean id="promptApp" class="com.ourpalm.tank.app.prompt.PromptAppImpl"/>
+	
+	
+	<bean id="mutilDfaApp" class="com.ourpalm.tank.app.dfa.MutilDfaAppImpl">
+		<property name="path" value="${sensitive.word.file}"/>
+	</bean>
+	
+	
+	<bean id="sevenLoginApp" class="com.ourpalm.tank.app.activity.sevenlogin.ActivitySevenLoginAppImpl">
+		<property name="activityDao" ref="activityDao"/>
+	</bean>
+	
+	<bean id="monthLoginApp" class="com.ourpalm.tank.app.activity.monthlogin.ActivityMonthLoginAppImpl">
+		<property name="activityDao" ref="activityDao"/>
+	</bean>
+	
+	<bean id="imApp" class="com.ourpalm.tank.app.im.InstantMessageAppImpl">
+		<property name="imDao" ref="imDao"/>
+	</bean>
+	
+	<bean id="honorShopApp" class="com.ourpalm.tank.app.honor.HonorShopAppImpl">
+		<property name="shopRecordDao" ref="honorShopRecordDao"/>
+	</bean>
+	
+	<bean id="masterQuestApp" class="com.ourpalm.tank.app.quest.MasterQuestAppImpl">
+		<property name="questDao" ref="questDao"/>
+	</bean>
+	
+	
+	<bean id="vipApp" class="com.ourpalm.tank.app.vip.VipAppImpl">
+		<property name="vipDao" ref="vipDao"/>
+	</bean>
+	
+	<bean id="payApp" class="com.ourpalm.tank.app.pay.PayAppImpl">
+		<property name="userAttrDao" ref="userAttrDao"/>
+	</bean>
+	
+	<bean id="platformApp" class="com.ourpalm.tank.app.platform.PlatformAppImpl"/>
+	
+	<bean id="seasonRankApp" class="com.ourpalm.tank.app.season.SeasonRankAppImpl">
+		<property name="seasonRankDao" ref="seasonRankDao"/>
+	</bean>
+	
+	<bean id="continueLoginApp" class="com.ourpalm.tank.app.continuelogin.ContinueLoginAppImpl">
+		<property name="continueLoginDao" ref="continueLoginDao"/>
+	</bean>
+	
+	<bean id="activityApp" class="com.ourpalm.tank.app.activity.ActivityAppImpl">
+		<property name="activityDao" ref="activityDao"/>
+		
+		<property name="sevenLoginApp" ref="sevenLoginApp"/>
+		<property name="monthLoginApp" ref="monthLoginApp"/>
+	</bean>
+	
+	<bean id="gameLogApp" class="com.ourpalm.tank.app.log.GameLogAppImpl"/>
+	
+	<bean id="gameDBLogApp" class="com.ourpalm.tank.app.dblog.module.GameDBLogApp"/>
+	
+	<bean id="blueApp" class="com.ourpalm.tank.app.blueVip.BlueAppImpl">
+		<property name="blueDao" ref="blueDao"/>
+	</bean>
+	
+	<bean id="qqHallApp" class="com.ourpalm.tank.app.qqHall.QQHallAppImpl">
+		<property name="qqHallDao" ref="qqHallDao"/>
+	</bean>
+	
+	<bean id="qqZoneApp" class="com.ourpalm.tank.app.qqZone.QQZoneAppImpl">
+		<property name="qqZoneDao" ref="qqZoneDao"/>
+	</bean>
+	
+	<bean id="luckyWheelApp" class="com.ourpalm.tank.app.luckyWheel.LuckyWheelAppImpl">
+		<property name="luckyWheelDao" ref="luckyWheelDao"/>
+	</bean>
+	
+	<bean id="rankApp" class="com.ourpalm.tank.app.rank.RankAppImpl">
+		<property name="seasonRankDao" ref="seasonRankDao"/>
+	</bean>
+	
+	<bean id="yellowApp" class="com.ourpalm.tank.app.yellowVip.YellowAppImpl">
+		<property name="yellowDao" ref="yellowDao"/>
+	</bean>
+	
+	<bean id="redMoneyApp" class="com.ourpalm.tank.app.redMoney.RedMoneyAppImpl">
+		<property name="activityDao" ref="activityDao"/>
+	</bean>
+	
+	<bean id="memberNewApp" class="com.ourpalm.tank.app.memberNew.MemberNewAppImpl">
+		<property name="roleMemberNewDao" ref="roleMemberNewDao"/>
+	</bean>
+	
+</beans>

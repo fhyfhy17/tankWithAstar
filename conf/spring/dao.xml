@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean class="com.ourpalm.tank.app.DAOFactory" autowire="byName"/>
+
+	<bean id="jedisDao" class="com.ourpalm.tank.dao.impl.AbstractJedisDao" abstract="true">
+		<property name="client" ref="jedisClient"/>
+	</bean>
+	
+	
+	<bean id="userDAO" class="com.ourpalm.tank.dao.impl.UserDAOImpl" parent="jedisDao"/>
+	
+	<bean id="userAttrDao" class="com.ourpalm.tank.dao.impl.UserAttrDaoImpl" parent="jedisDao"/>
+	
+	<bean id="roleTankDao" class="com.ourpalm.tank.dao.impl.RoleTankDaoImp" parent="jedisDao"/>
+	
+	<bean id="packageDao" class="com.ourpalm.tank.dao.impl.PackageDaoImpl" parent="jedisDao" />
+	
+	<bean id="shopRecordDao" class="com.ourpalm.tank.dao.impl.ShopRecordDaoImpl" parent="jedisDao" />
+	
+	<bean id="questDao" class="com.ourpalm.tank.dao.impl.QuestDaoImpl" parent="jedisDao" />
+	
+	<bean id="roleWarInfoDao" class="com.ourpalm.tank.dao.impl.RoleWarInfoDaoImpl" parent="jedisDao"/>
+
+	<bean id="achievementDao" class="com.ourpalm.tank.dao.impl.AchievementDaoImpl" parent="jedisDao" />
+	
+	<bean id="roleMemberDao" class="com.ourpalm.tank.dao.impl.RoleMemberDaoImpl" parent="jedisDao" />
+
+	<bean id="roleUseMemberDao" class="com.ourpalm.tank.dao.impl.RoleUseMemberDaoImpl" parent="jedisDao" />
+	
+	<bean id="roleLotteryDao" class="com.ourpalm.tank.dao.impl.RoleLotteryDaoImpl" parent="jedisDao" />
+
+	<bean id="corpsDao" class="com.ourpalm.tank.dao.impl.CorpsDaoImpl" parent="jedisDao" init-method="init"/>
+	
+	<bean id="matchDao" class="com.ourpalm.tank.dao.impl.MatchDaoImpl" parent="jedisDao"/>
+	
+	<bean id="roleCampDao" class="com.ourpalm.tank.dao.impl.RoleCampDaoImpl" parent="jedisDao"/>
+	
+	<bean id="friendDao" class="com.ourpalm.tank.dao.impl.FriendDaoImpl" parent="jedisDao"/>
+	
+	<bean id="mailDao" class="com.ourpalm.tank.dao.impl.MailDaoImpl" parent="jedisDao"/>
+	
+	<bean id="activityDao" class="com.ourpalm.tank.dao.impl.ActivityDaoImpl" parent="jedisDao"/>
+	
+	<bean id="imDao" class="com.ourpalm.tank.dao.impl.InstantMessageDaoImpl" parent="jedisDao"/>
+	
+	<bean id="honorShopRecordDao" class="com.ourpalm.tank.dao.impl.HonorShopRecordDaoImpl" parent="jedisDao"/>
+	
+	<bean id="seasonMatchDao" class="com.ourpalm.tank.dao.impl.SeasonMatchDaoImpl" parent="jedisDao"/>
+	
+	
+	<bean id="vipDao" class="com.ourpalm.tank.dao.impl.VipDaoImpl" parent="jedisDao"/>
+	
+	<bean id="seasonRankDao" class="com.ourpalm.tank.dao.impl.SeasonRankDaoImpl" parent="jedisDao"/>
+	<bean id="continueLoginDao" class="com.ourpalm.tank.dao.impl.ContinueLoginDaoImpl" parent="jedisDao"/>
+	
+	<bean id="vipShopRecordDao" class="com.ourpalm.tank.dao.impl.VipShopDaoImpl" parent="jedisDao"/>
+
+	<bean id="qqHallDao" class="com.ourpalm.tank.dao.impl.QQHallDaoImpl" parent="jedisDao"/>
+	
+	<bean id="qqZoneDao" class="com.ourpalm.tank.dao.impl.QQZoneDaoImpl" parent="jedisDao"/>
+	
+	<bean id="blueDao" class="com.ourpalm.tank.dao.impl.BlueDaoImpl" parent="jedisDao"/>
+	
+	<bean id="luckyWheelDao" class="com.ourpalm.tank.dao.impl.LuckyWheelDaoImpl" parent="jedisDao"/>
+	
+	<bean id="yellowDao" class="com.ourpalm.tank.dao.impl.YellowDaoImpl" parent="jedisDao"/>
+	
+	<bean id="tankDevelopDao" class="com.ourpalm.tank.dao.impl.TankDevelopDaoImpl" parent="jedisDao"/>
+	
+	<bean id="roleMemberNewDao" class="com.ourpalm.tank.dao.impl.RoleMemberNewDaoImpl" parent="jedisDao"/>
+	
+</beans>

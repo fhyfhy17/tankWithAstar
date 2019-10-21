@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="jedisClient" class="com.ourpalm.core.dao.redis.client.ShardedClient" init-method="init">
+		<property name="redis_pool_minIdle" value="${redis.pool.minIdle}"/>
+		<property name="redis_pool_maxIdle" value="${redis.pool.maxIdle}"/>
+		<property name="redis_pool_maxTotal" value="${redis.pool.maxTotal}"/>
+		<property name="shardedList">
+			<list>
+				<bean class="com.ourpalm.core.dao.redis.client.ShardedParam">
+					<constructor-arg><value>${redis.host.ip}</value></constructor-arg>
+					<constructor-arg><value>${redis.port}</value></constructor-arg>
+					<constructor-arg><value>${redis.password}</value></constructor-arg>
+			   </bean>
+			   <bean class="com.ourpalm.core.dao.redis.client.ShardedParam">
+					<constructor-arg><value>${redis1.host.ip}</value></constructor-arg>
+					<constructor-arg><value>${redis1.port}</value></constructor-arg>
+					<constructor-arg><value>${redis1.password}</value></constructor-arg>
+				</bean>
+				<bean class="com.ourpalm.core.dao.redis.client.ShardedParam">
+					<constructor-arg><value>${redis2.host.ip}</value></constructor-arg>
+					<constructor-arg><value>${redis2.port}</value></constructor-arg>
+					<constructor-arg><value>${redis2.password}</value></constructor-arg>
+			   </bean>
+			   <bean class="com.ourpalm.core.dao.redis.client.ShardedParam">
+					<constructor-arg><value>${redis3.host.ip}</value></constructor-arg>
+					<constructor-arg><value>${redis3.port}</value></constructor-arg>
+					<constructor-arg><value>${redis3.password}</value></constructor-arg>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	
+	
+	<bean id="lock" class="com.ourpalm.core.dao.redis.client.SimpleClient" init-method="init">
+		<property name="redis_pool_minIdle" value="${redis.pool.minIdle.lock}"/>
+		<property name="redis_pool_maxIdle" value="${redis.pool.maxIdle.lock}"/>
+		<property name="redis_pool_maxTotal" value="${redis.pool.maxTotal.lock}"/>
+		<property name="ip" value="${redis.host.ip.lock}"/>
+		<property name="port" value="${redis.port.lock}"/>
+		<property name="passwords" value="${redis.password.lock}"/>
+	</bean>
+	
+    
+</beans>

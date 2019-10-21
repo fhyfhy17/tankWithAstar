@@ -1,0 +1,425 @@
+/********************************************************************
+*	filename: 	msg_13_corps.proto
+*	purpose:	军团
+*
+*********************************************************************/
+
+package PROTO_CORPS;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "CORPS_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_CORPS = 13;
+}
+
+enum CMD_ID {
+	CTS_CORPS_LIST					= 1; //军团列表
+	STC_CORPS_LIST					= 2; //返回军团列表
+
+	CTS_CORPS_CREATE				= 3; //创建军团
+	STC_CORPS_CREATE				= 4; //返回创建军团
+
+	CTS_CORPS_INFO					= 5; //军团信息
+	STC_CORPS_INFO					= 6; //返回军团信息
+
+	CTS_CORPS_SEARCH				= 7; //军团搜索(返回军团列表)
+
+	CTS_CORPS_JOIN					= 8; //申请加入军团
+	STC_CORPS_JOIN					= 9; //申请加入返回
+
+	CTS_CORPS_MDF_DEC				= 10; //修改军团宣言
+	STC_CORPS_MDF_DEC				= 11; //返回结果
+
+	CTS_CORPS_MDF_LVL				= 12; //修改职位名称
+	STC_CORPS_MDF_LVL				= 13; //返回结果
+
+	CTS_CORPS_APPLY_LST				= 14; //申请加入列表(空命令)
+	STC_CORPS_APPLY_LST 			= 15; //返回申请加入列表
+
+	CTS_CORPS_APPLY					= 16; //审批
+	STC_CORPS_APPLY					= 17; //审批结果
+
+	CTS_CORPS_TECH_LST				= 18; //科技列表(空消息)
+	STC_CORPS_TECH_LST				= 19; //返回科技列表
+
+	CTS_CORPS_DONATE_GOODS			= 20; //科技普通捐献
+	STC_CORPS_DONATE_GOODS			= 21; //返回科技普通捐献
+
+	CTS_CORPS_DONATE_GOLD			= 22; //科技金钱捐献
+	STC_CORPS_DONATE_GOLD			= 23; //返回科技金钱捐献
+
+	CTS_CORPS_TECH_DEV				= 24; //科技研发
+	STC_CORPS_TECH_DEV				= 25; //返回科技研发
+
+	CTS_CORPS_DONATE_CD				= 26; //捐献CD加速(空消息)
+	STC_CORPS_DONATE_CD				= 27; //返回捐献CD加速
+
+	CTS_CORPS_JOB_FATE				= 30;	//职位任命
+	STC_CORPS_JOB_FATE				= 31;	//返回职位任命
+
+	CTS_CORPS_SHOP_LIST				= 32;	//请求商店列表(空消息)
+	STC_CORPS_SHOP_LIST				= 33;	//返回商店列表
+
+	CTS_CORPS_SHOP_FLUSH			= 34;	//刷新商城(空消息 返回 STC_CORPS_SHOP_LIST)
+
+	CTS_CORPS_SHOP_BUY				= 35;	//商城购买
+	STC_CORPS_SHOP_BUY				= 36;	//返回购买结果
+
+	CTS_CORPS_DISBAND				= 37;	//退出解散军团
+	STC_CORPS_DISBAND				= 38;	//返回军团解散
+
+	CTS_CORPS_TIREN					= 39;	//踢人出军团
+	STC_CORPS_TIREN					= 40;	//返回踢人出军团
+
+	CTS_CORPS_SALUTE				= 41;	//请求敬礼(空消息)
+	STC_CORPS_SALUTE				= 42;	//返回敬礼奖励
+
+	CTS_CORPS_SETTING				= 43;	//军团设置
+	STC_CORPS_SETTING				= 44;	//设置返回
+
+	STC_CORPS_NO_IN_CORP			= 45;   //已不在军团内
+}
+
+//军团列表
+message CTS_CORPS_LIST_MSG {
+	required uint32 page	= 1; //当前页码（0开始）
+}
+
+//返回军团列表
+message STC_CORPS_LIST_MSG {
+	required uint32	createDiamonds	= 1; //创建军团所需钻石
+	repeated CorpsItem corps		= 2; //军团列表
+}
+
+message CorpsItem {
+	required uint32 id				= 1; //军团id
+	required string name			= 2; //军团名称
+	required uint32 level			= 3; //军团等级
+	required string leader			= 4; //军团长
+	required uint32 activeScore		= 5; //活跃度
+	required uint32 currPlayer		= 6; //当前军团人数
+	required uint32 maxPlayer		= 7; //最大军团人数
+	required RecruitType recruit	= 8; //审批状态
+	required string dec				= 9; //军团宣言
+}
+
+enum RecruitType {
+	auto	= 1; //自动审批
+	manual	= 2; //手动审批
+	refuse	= 3; //拒绝加入
+	examine	= 4; //已申请正在审批中
+}
+
+
+//创建军团
+message CTS_CORPS_CREATE_MSG {
+	required string name	= 1; //军团名称
+}
+
+//返回创建军团
+message STC_CORPS_CREATE_MSG {
+	required uint32 result	= 1; //1:成功 0:失败
+	required string info 	= 2; //提示信息
+	required uint32 id		= 3; //军团id
+}
+
+
+//军团信息
+message CTS_CORPS_INFO_MSG {
+	required uint32 id		= 1; //军团id
+}
+
+//返回军团信息
+message STC_CORPS_INFO_MSG {
+	required uint32 result				= 1; //1:成功 0:失败
+	optional string info 				= 2; //提示信息
+	optional string dec					= 3; //军团宣言
+	optional string name				= 4; //军团名称
+	optional uint32 id					= 5; //军团id
+	optional uint32 level				= 6; //军团等级
+	optional uint32 currPlayer			= 7; //目前人数
+	optional uint32 maxPlayer			= 8; //最大人数
+	optional uint32 activeScore			= 9; //活跃度
+	optional uint32 battleScore			= 10; //战斗力
+	optional string s1Name				= 11; //s1名称
+	optional string s2Name				= 12; //s2名称
+	optional string s3Name				= 13; //s3名称
+	optional string s4Name				= 14; //s4名称
+	optional string s5Name				= 15; //s5名称
+	optional CorpsLevel selfCorpsLvl	= 16; //自身在军团中的级别
+	repeated CorpsPlayerItem corps		= 17; //成员列表
+	optional bool	salute				= 18; //是否领取敬礼奖励(true已领取)
+	optional RecruitType recType		= 19; //审批状态
+}
+
+message CorpsPlayerItem {
+	required uint32 roleId					= 1;  //角色id
+	required string roleName				= 2;  //角色名称
+	required uint32 level					= 3;  //角色等级
+	required uint32 vipLvl					= 4;  //vip等级
+	required uint32 battleScore				= 5;  //战斗力
+	required uint32 offTime					= 6;  //离线时常(单位:秒, 0:表示为在线)
+	required CorpsLevel corpsLvl			= 7;  //军团级别
+	required uint32 contribution			= 8;  //贡献值
+	required uint32 weekContribution		= 9;  //周贡献值
+	required uint32 enterCorpsTime			= 10; //进入军团时间
+	required uint32 tankId					= 11; //主战坦克ID
+	required uint32 titleId					= 12; //军衔
+	required string pfUserInfo				= 13; //蓝钻信息
+	optional string pfYellowUserInfo		= 14; //平台黄钻信息
+}
+
+enum CorpsLevel {
+	s1	= 1;
+	s2	= 2;
+	s3	= 3;
+	s4	= 4;
+	s5	= 5;
+}
+
+
+//搜索军团
+message CTS_CORPS_SEARCH_MSG {
+	required string key		= 1; //搜索关键字
+}
+
+
+//申请加入军团
+message CTS_CORPS_JOIN_MSG {
+	required uint32 id 		= 1; //军团id(军团id为0，表示自动加入)
+}
+
+//加入军团返回
+message STC_CORPS_JOIN_MSG {
+	required uint32 result	= 1; //1:成功 0:失败
+	required string info 	= 2; //提示信息
+	required uint32 id		= 3; //军团id
+}
+
+//修改军团宣言
+message CTS_CORPS_MDF_DEC_MSG {
+	required string dec		= 1; //宣言内容
+}
+
+//修改军团宣言返回
+message STC_CORPS_MDF_DEC_MSG {
+	required uint32 result	= 1; //1:成功 0:失败
+	optional string info 	= 2; //提示信息
+	optional string dec		= 3; //宣言内容
+}
+
+//修改职位名称
+message CTS_CORPS_MDF_LVL_MSG {
+	required CorpsLevel corpsLvl	= 1;
+	required string name			= 2;
+}
+
+//修改职位名称返回
+message STC_CORPS_MDF_LVL_MSG {
+	required uint32 result			= 1; //1:成功 0:失败
+	optional string info 			= 2; //提示信息
+	optional CorpsLevel corpsLvl	= 3;
+	optional string name			= 4;
+}
+
+//返回审批列表
+message STC_CORPS_APPLY_LST_MSG {
+	repeated ApplyItem items		= 1; //申请列表
+}
+
+message ApplyItem {
+	required uint32 roleId			= 1; //角色id
+	required string roleName		= 2; //角色名称
+	required uint32 level			= 3; //角色等级
+	required uint32 vipLvl			= 4; //vip等级
+	required uint32 battleScore		= 5; //战斗力
+	required uint32 titleId			= 6; //军衔
+	required string pfUserInfo		= 7; //蓝钻信息
+	optional string pfYellowUserInfo = 8; //平台黄钻信息
+}
+
+
+//审批
+message CTS_CORPS_APPLY_MSG {
+	required uint32 roleId		= 1; //角色id
+	required ApplyRst rst		= 2;
+}
+
+enum ApplyRst {
+	pass	= 1; //通过
+	nopass	= 2; //拒绝
+}
+
+//返回审批结果
+message STC_CORPS_APPLY_MSG {
+	required uint32 result			= 1; //1:成功 0:失败
+	optional string info 			= 2; //提示信息
+	optional uint32 roleId			= 3;
+	optional CorpsPlayerItem item	= 4; //成员信息
+}
+
+
+//返回科技列表
+message STC_CORPS_TECH_LST_MSG {
+	required uint32 result				= 1; //1:成功 0:失败
+	optional string info 				= 2; //提示信息
+	repeated TechnologyItem techInfo	= 3; //科技
+	optional bool	coolState			= 4; //是否冷却中(true为冷却中)
+	optional uint32 coolTime			= 5; //捐献冷却时间
+	optional float	expGoldRat			= 6; //剩余经验转换金币比率(小数)
+	optional float  timeGoldRat			= 7; //捐献冷却时间转换金币比率(时间以秒计算)
+	optional uint32 maxDonateCoolTime	= 8; //允许最大捐献冷却时间(单位:秒)
+	optional float donateTimeRat		= 9; //捐献值换算时间比例(小数)
+}
+
+//科技信息
+message TechnologyItem{
+	required uint32 techId			= 1; //科技id
+	required uint32 techCurExp		= 2; //科技升级当前经验
+	required uint32	state			= 3; //1：可捐献 2：冷却中 3：经验值最大 4：军团等级不足 5：科技研发中
+	required uint32 devTime			= 4; //科技研发剩余时间（剩余时间为0时可捐献）
+}
+
+
+//科技普通捐献
+message CTS_CORPS_DONATE_GOODS_MSG {
+	required uint32 techId					= 1; //科技id
+	repeated CorpsGoodsItem goodsItem		= 2; //捐献物品列表
+}
+
+//捐献物品列表
+message CorpsGoodsItem{
+	required uint32 goodsId			= 1; //物品id
+	required uint32 goodsNum		= 2; //物品数量
+}
+
+
+//返回科技普通捐献
+message STC_CORPS_DONATE_GOODS_MSG {
+	required uint32 result			= 1; 	//1:成功 0:失败
+	optional string info			= 2; 	//失败信息（已经在研发中）
+	optional uint32	state			= 3; 	//1：可捐献 2：冷却中 3：经验值最大 4：军团等级不足 5：科技研发中
+	optional uint32 coolTime		= 4; 	//捐献冷却时间
+}
+
+//科技金钱捐献
+message CTS_CORPS_DONATE_GOLD_MSG {
+	required uint32 techId		= 1; //科技id
+}
+
+//返回科技金钱捐献
+message STC_CORPS_DONATE_GOLD_MSG {
+	required uint32 result			= 1; //1:成功 0:失败
+	optional string info			= 2; //失败信息（已经在研发中）
+	optional uint32	state			= 3; //1：可捐献 2：冷却中 3：经验值最大 4：军团等级不足 5：科技研发中
+	optional uint32 coolTime		= 4; //捐献冷却时间
+}
+
+//科技研发
+message CTS_CORPS_TECH_DEV_MSG {
+	required uint32 techId 		= 1;        //科技id
+}
+
+//返回科技研发
+message STC_CORPS_TECH_DEV_MSG {
+	required uint32 result			= 1; //1:成功 0:失败
+	optional string info			= 2; //失败信息（已经在研发中）
+    optional uint32 devTime			= 3; //科技研发剩余时间（剩余时间为0时可捐献）
+}
+
+//返回捐献CD加速
+message STC_CORPS_DONATE_CD_MSG {
+	required uint32 result			= 1; //1:成功 0:失败
+	optional string info			= 2; //失败信息
+}
+
+
+//职务提升降低
+message CTS_CORPS_JOB_FATE_MSG {
+	required uint32 type 	= 1;	// 1：提升 2：降低
+	required uint32 roleId	= 2; 	//角色Id
+}
+
+//返回职务变化结果
+message STC_CORPS_JOB_FATE_MSG {
+	required bool result		= 1; //成功失败
+	optional string info 		= 2; //错误提示信息
+	optional uint32 roleId		= 3;
+	optional CorpsLevel lvl		= 4; //职位
+}
+
+
+//返回商城列表
+message STC_CORPS_SHOP_LIST_MSG {
+	required bool result			= 1; //成功失败
+	optional string info 			= 2; //错误提示信息
+	optional uint32 flushGold		= 3; //刷新商城所需要的金币数
+	repeated ShopItem shops			= 4; //商品信息
+	optional uint32 flushTime		= 5; //剩余刷新时间
+}
+
+//商品
+message ShopItem {
+	required uint32 id			= 1; //商品id
+	required uint32 goodsId		= 2;
+	required uint32 num			= 3;
+	required uint32 corpsGold	= 4; //所需军团币
+}
+
+//商城购买
+message CTS_CORPS_SHOP_BUY_MSG {
+	required uint32 id		= 1;	//商品id
+}
+
+//商城购买返回
+message STC_CORPS_SHOP_BUY_MSG {
+	required uint32 result		= 1;
+	optional string info		= 2;
+	optional uint32 id			= 3;	//商品id
+}
+
+//退出解散军团
+message CTS_CORPS_DISBAND_MSG {
+	required uint32	type	= 1; //1:解散军团  2:退出军团
+}
+
+//退出解散军团返回
+message STC_CORPS_DISBAND_MSG {
+	required uint32 result		= 1;
+	optional string info		= 2;
+	optional bool exit			= 3; //true退出, false军团解散
+}
+
+//踢人请求
+message CTS_CORPS_TIREN_MSG {
+	required uint32 roleId		= 1;
+}
+
+//返回踢人
+message STC_CORPS_TIREN_MSG {
+	required uint32 result		= 1;
+	optional string info		= 2;
+	optional uint32 roleId		= 3;
+}
+
+//放回敬礼奖励
+message STC_CORPS_SALUTE_MSG {
+	required uint32 result		= 1;
+	optional string info		= 2;
+	optional uint32 gold		= 3;	//获得金币数
+}
+
+//军团设置
+message CTS_CORPS_SETTING_MSG {
+	required RecruitType type	= 1;
+}
+
+//军团设置返回
+message STC_CORPS_SETTING_MSG {
+	required uint32 result		= 1;
+	optional string info		= 2;
+	optional RecruitType type	= 3;
+}

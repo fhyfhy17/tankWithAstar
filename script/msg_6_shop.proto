@@ -1,0 +1,142 @@
+/********************************************************************
+*
+*	filename: 	msg_6_SHOP.proto
+*	purpose:	商店功能
+*
+*********************************************************************/
+
+package PROTO_SHOP;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "SHOP_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_SHOP = 6;
+}
+
+enum CMD_ID {
+	CTS_SHOP_LIST				= 1;		//商店物品列表（空消息）
+	CTS_SHOP_BUY				= 2;		//购买
+	CTS_SHOP_REFRESH			= 3;		//商店刷新 （空消息）
+	
+	STC_SHOP_LIST				= 4;		//商店物品列表（刷新返回）
+	STC_SHOP_BUY_RESULT			= 5;		//购买结果
+	
+	CTS_ACTIVE_CODE_PARAM		= 6;		//请求激活码兑换参数(空消息)
+	STC_ACTIVE_CODE_PARAM		= 7;		//返回激活码兑换参数
+	STC_ACTIVE_REWS				= 8;		//兑换礼包奖励
+	
+	
+	CTS_HONOR_SHOP_LIST				= 9;		//荣誉商店物品列表（空消息）
+	CTS_HONOR_SHOP_BUY				= 10;		//荣誉购买
+	CTS_HONOR_SHOP_REFRESH			= 11;		//荣誉商店刷新 （空消息）
+	
+	STC_HONOR_SHOP_LIST				= 12;		//荣誉商店物品列表（刷新返回）
+	STC_HONOR_SHOP_BUY_RESULT		= 13;		//荣誉购买结果
+	
+	CTS_VIP_SHOP_LIST				= 14;		//vip商店（空消息）
+	STC_VIP_SHOP_LIST				= 15;
+	CTS_VIP_SHOP_REFRESH			= 16;		//vip商店刷新（空消息），返回vip商店列表
+	
+	CTS_VIP_SHOP_BUY				= 17;		//vip商店购买
+	STC_VIP_SHOP_BUY				= 18;
+	
+	
+
+}
+
+//商品分组
+enum ITEM_GROUP {
+	SPECIAL_SALE = 1;	//特价
+	COMMON_SALE  = 2;	//普通
+}
+
+message ShopItem {
+	required uint32 itemId		= 1;	//商品ID
+	required uint32 goodsId		= 2;	//物品ID
+	required uint32 count		= 3;	//物品数量
+	required uint32	price		= 4;	//原价
+	required uint32 currPrice	= 5;	//现价	
+	required uint32 discount	= 6;	//折扣 （discount == 0 不打折）
+	required bool hadBuy 		= 7; 	//是否已经购买
+	required uint32 moneyType 	= 8; 	//货币类型
+}
+
+//商店物品列表
+message STC_SHOP_LIST_MSG {
+	required uint32 leftTime 	= 1;	//剩余刷新时间（秒）
+	repeated ShopItem itemList 	= 2;	//商品列表
+	required uint32 refreshCost = 3;	//刷新花费
+}
+
+//购买
+message CTS_SHOP_BUY_MSG {
+	required uint32 itemId	= 1;		//商品ID
+	required int32 itemNum   =2; 		//数量 
+}
+message STC_SHOP_BUY_RESULT_MSG {
+	required bool success			= 1;		//是否购买成功
+	required string info			= 2;		//失败时的提示信息
+	required uint32 moneyType 		= 3;		//属性类型(3：金币 5：银币)
+	required uint32 money			= 4;		//消耗钱数
+	required string goodsName		= 5;		//所购买的道具名称
+	required uint32 num				= 6;		//购买道具数量
+}
+
+message STC_ACTIVE_CODE_PARAM_MSG {
+	required string url			= 1;	//发货地址
+	required string param		= 2;	//激活码兑换参数
+}
+
+message STC_ACTIVE_REWS_MSG {
+	required uint32 goodsId 	= 1; 	//礼包ID
+}
+
+message STC_HONOR_SHOP_LIST_MSG {
+	required uint32 leftTime 	= 1;	//剩余刷新时间（秒）
+	repeated ShopItem itemList 	= 2;	//商品列表
+	required uint32 refreshCost = 3;	//刷新花费
+}
+
+message STC_HONOR_SHOP_BUY_RESULT_MSG {
+	required bool success			= 1;		//是否购买成功
+	required string info			= 2;		//失败时的提示信息
+	required uint32 moneyType 		= 3;		//属性类型(7：荣誉)
+	required uint32 money			= 4;		//消耗钱数
+	required string goodsName		= 5;		//所购买的道具名称
+	required uint32 num				= 6;		//购买道具数量
+}
+
+message VipShopItem {
+	required uint32 itemId		= 1;	//商品ID
+	required uint32 goodsId		= 2;	//物品ID
+	required uint32 count		= 3;	//物品数量
+	required bool hadBuy 		= 4; 	//是否已经购买
+	required uint32	price1		= 5;	//原价1
+	required uint32	price2		= 6;	//原价2
+	required uint32 moneyType1 	= 7; 	//货币类型1
+	required uint32 moneyType2 	= 8; 	//货币类型2
+}
+
+message STC_VIP_SHOP_LIST_MSG {
+	required uint32 refreshTime		= 1;
+	repeated VipShopItem itemList 	= 2;	//商品列表
+	required uint32 refreshCost 	= 3;	//刷新花费
+}
+
+message CTS_VIP_SHOP_BUY_MSG {
+	required uint32 itemId		= 1;	//购买物品
+	required uint32 moneyType	= 2;	//货币类型
+	required int32  itemNum     = 3;    //数量 
+}
+
+message STC_VIP_SHOP_BUY_MSG {
+	required bool success			= 1;		//是否购买成功
+	optional string info			= 2;		//失败时的提示信息
+	required uint32 moneyType 		= 3;		//货币类型
+	required uint32 money			= 4;		//消耗钱数
+	required string goodsName		= 5;		//所购买的道具名称
+	required uint32 num				= 6;		//购买道具数量
+}

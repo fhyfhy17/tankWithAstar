@@ -1,0 +1,190 @@
+/********************************************************************
+*	filename: 	msg_14_friend.proto
+*	purpose:	好友
+*
+*********************************************************************/
+
+package PROTO_FRIEND;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "FRIEND_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_FRIEND = 14;
+}
+
+enum CMD_ID {
+	CTS_FRIEND_PAGE		= 1; //请求好友界面（空消息）
+	STC_FRIEND_PAGE		= 2; //返回好友界面
+	
+	CTS_FRIEND_APPLY	= 3; //请求添加好友申请
+	STC_FRIEND_APPLY	= 4; //返回添加好友申请
+	
+	CTS_FRIEND_FIND		= 5; //请求查找好友
+	STC_FRIEND_FIND		= 6; //返回查找好友
+	
+	CTS_FRIEND_RECOMMEND	= 7; //请求推荐好友	（空消息）
+	STC_FRIEND_RECOMMEND	= 8; //返回推荐好友
+	
+	CTS_FRIEND_DELETE	= 9;  //请求删除好友
+	STC_FRIEND_DELETE 	= 10; //返回删除好友
+	
+	CTS_FRIEND_APPLYPAGE	= 11; //请求好友申请界面（空消息）
+	STC_FRIEND_APPLYPAGE	= 12; //返回好友申请界面
+	
+	CTS_FRIEND_CONFIRM		= 13; //请求同意添加好友
+	STC_FRIEND_CONFIRM		= 14; //返回同意添加好友
+	
+	CTS_FRIEND_REFUSE		= 15; //请求拒绝添加好友
+	STC_FRIEND_REFUSE		= 16; //返回拒绝添加好友
+	
+	CTS_FRIEND_SENDGOODS    = 17; //请求赠送
+	STC_FRIEND_SENDGOODS    = 18; //返回赠送
+	
+	CTS_FRIEND_RECEIVEPAGE  = 19; //请求收礼界面（空消息）
+	STC_FRIEND_RECEIVEPAGE  = 20; //返回收礼界面
+	
+	CTS_FRIEND_RECEIVEGOODS = 21; //请求收礼
+	STC_FRIEND_RECEIVEGOODS = 22; //返回收礼
+	
+	STC_FRIEND_TIP		= 26; //好友提示消息
+	
+	STC_FRIEND_PAGE_PUSH = 27; //给好友推送添加者
+	
+}
+
+//好友信息
+message FriendInfo {
+	required uint32 roleId 	= 1;	//玩家id
+	required uint32 level 	= 2;	//等级
+	required uint32 titleId = 3;	//军衔
+	required string name 	= 4;	//名称
+	required uint32 vip 	= 5;	//vip等级
+	required bool isOnline 	= 6;	//是否在线
+	optional uint32 outTime = 7;	//上次离线（秒）
+	optional bool hadSendGoods 	= 8;	//是否赠送过好友Valu
+	optional bool beSendGoods 	= 9;	//是否被好友赠送过
+	required uint32 tankTempId 	= 10;	//坦克模板id
+	required bool isElite		= 11;	//是否精英坦克
+	required string corpsName	= 12;	//军团名称
+	required string pfUserInfo	= 13;	//平台信息
+	optional string pfYellowUserInfo = 14; //平台黄钻信息
+}
+
+//好友申请
+message FriendApply {
+	required uint32 roleId 	= 1;
+	required string name 	= 2;
+}
+
+//好友赠送
+message FriendGoods {
+	required uint32 roleId 	= 1;	//玩家id
+	required uint32 gold 	= 2;	//赠送道具类型
+}
+
+//好友界面
+message STC_FRIEND_PAGE_MSG {
+	repeated FriendInfo friends = 1;	//好友列表
+	required uint32 friendMax   = 2;	//好友上限
+}
+
+//好友申请
+message CTS_FRIEND_APPLY_MSG {
+	required uint32 roleId = 1;		//要添加的好友id
+}	
+message STC_FRIEND_APPLY_MSG {
+	required uint32 roleId 	= 1;	//要添加的好友id
+	required bool success 	= 2;	//是否添加成功
+	optional string info 	= 3;	//提示信息
+}
+
+//好友查找
+message CTS_FRIEND_FIND_MSG {
+	required string keyword = 1;
+}
+message STC_FRIEND_FIND_MSG {
+	required bool success 		= 1;
+	repeated FriendInfo friend	= 2;
+	optional string info 		= 3; 	//提示信息
+}
+
+//好友推荐
+message STC_FRIEND_RECOMMEND_MSG {
+	repeated FriendInfo friends = 1;	//推荐好友列表
+}
+
+//删除好友
+message CTS_FRIEND_DELETE_MSG {
+	required uint32 roleId = 1;
+}
+message STC_FRIEND_DELETE_MSG {
+	required uint32 roleId 	= 1;
+	required bool success 	= 2;	//是否删除成功
+	optional string info 	= 3; 	//提示信息
+}
+
+//好友申请界面
+message	STC_FRIEND_APPLYPAGE_MSG {
+	repeated FriendInfo friends = 1;	//好友申请信息
+}
+
+//请求同意添加好友
+message CTS_FRIEND_CONFIRM_MSG {
+	required uint32 roleId = 1;
+}
+message STC_FRIEND_CONFIRM_MSG {
+	required bool success 			= 1;
+	optional string info 			= 2; 	//提示信息
+	optional FriendInfo friendInfo 	= 3;	//好友信息
+}
+
+//玩家好友列表更新推送
+message STC_FRIEND_PAGE_PUSH_MSG {
+	required FriendInfo friendInfo = 1; 
+	required uint32 type = 2; 		// 1是添加；2是删除; 3是申请
+}
+
+//拒绝添加好友
+message CTS_FRIEND_REFUSE_MSG {
+	required uint32 roleId 	= 1;	//被拒绝的roleId
+}
+message STC_FRIEND_REFUSE_MSG {
+	required uint32 roleId 	= 1;	//被拒绝的roleId
+	required bool success 	= 2;
+	optional string info 	= 3; 	//提示信息
+}
+
+//赠送道具
+message CTS_FRIEND_SENDGOODS_MSG {
+	repeated uint32 roleIds = 1;
+}
+message STC_FRIEND_SENDGOODS_MSG {
+	repeated uint32 roleIds = 1; 	//赠送返回
+	required uint32 iron 	= 2;	//铁块数量
+	required uint32 gold 	= 3;	//金币
+}
+
+//收礼界面
+message STC_FRIEND_RECEIVEPAGE_MSG {
+	repeated FriendGoods goods = 1;
+}
+
+//收礼
+message CTS_FRIEND_RECEIVEGOODS_MSG {
+	repeated uint32 roleIds = 1; 
+}
+message STC_FRIEND_RECEIVEGOODS_MSG {
+	required bool success 	= 1;
+	optional string info 	= 2; 	//提示信息
+	repeated uint32 roleIds = 3;
+}
+
+//向玩家的好友推送消息
+message STC_FRIEND_TIP_MSG {
+	required string info 	= 1; 	
+}
+
+

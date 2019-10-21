@@ -1,0 +1,52 @@
+package PROTO_AREA;
+
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "AREA_MSG";
+
+enum CMD_TYPE {
+    CMD_TYPE_AREA = 1;
+};
+
+
+enum CMD_ID {
+    CTS_AREA_LIST  = 1;   //请求分区列表
+
+    STC_AREA_LIST  = 2;  //返回分区列表
+};
+
+
+enum AreaState {
+	FREE	= 1;	//空闲正常
+	BUSY	= 2;	//繁忙
+	FULL	= 3;	//爆满
+	STOP	= 4;	//维护
+};
+
+
+message CTS_AREA_LIST_MSG {
+	required string serviceId 	= 1;	//渠道
+	required string version		= 2;	//版本号
+}
+
+message STC_AREA_LIST_MSG {
+	repeated AreaItem  list		= 1;	//列表
+	repeated NoticeItem notices = 2;	//停服公告
+};
+
+message NoticeItem {
+	required string name	= 1;	//名称
+	required string title	= 2;	//标题
+	required string desc	= 3;	//内容
+}
+
+
+message AreaItem {
+	required uint32 id			= 1;	//分区ID
+	required string name		= 2;	//服务器名
+	required string ip			= 3;	//ip地址
+	required uint32 port		= 4;	//端口
+	required AreaState state	= 5;	//状态
+};
+

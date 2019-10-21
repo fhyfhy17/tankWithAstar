@@ -1,0 +1,57 @@
+/********************************************************************
+*
+*	filename: 	msg_8_title.proto
+*	purpose:	军衔
+*
+*********************************************************************/
+
+package PROTO_TITLE;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "ARMY_TITLE_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_TITLE = 8;
+}
+
+
+enum CMD_ID {
+	CTS_TITLE_INFO			= 1; //请求军衔信息(空命令)
+	CTS_DRAW_DAY_REWARD		= 2; //领取赛季最高军衔每日奖励(空命令)
+	CTS_CURR_TITLE			= 3; //请求当前军衔(用于战场结束,显示军衔升级)(空命令)
+	
+	STC_TITLE_INFO			= 4; //返回军衔信息
+	STC_DRAW_DAY_REWARD		= 5; //领取赛季最高军衔每日奖励返回
+	STC_CURR_TITLE			= 6; //请求当前军衔(用于战场结束,显示军衔升级)
+}
+
+
+//返回军衔信息
+message STC_TITLE_INFO_MSG {
+	required uint32 currTitleId			= 1; //当前军衔ID
+	required uint32 seasonMaxTitleId  	= 2; //本赛季最高军衔ID
+	required bool hadDrawDay			= 3; //是否领取每日奖励(true 已领取)
+	required uint32 iron				= 4; //银币
+	required uint32 gold				= 5; //金币
+	required uint32 honor				= 6; //荣誉
+	required string context				= 7; //赛季结束说明
+	required uint32 score				= 8; //军衔积分
+	required uint32 maxScore			= 9; //本军衔最大积分
+}
+
+
+//赛季每日奖励返回
+message STC_DRAW_DAY_REWARD_MSG {
+	required bool success		= 1; //是否成功
+	required string info		= 2; //提示信息
+	required uint32 iron		= 3; //银币
+	required uint32 gold		= 4; //金币
+	required uint32 honor		= 5; //荣誉
+}
+
+message STC_CURR_TITLE_MSG {
+	required uint32 titleId		= 1; //当前军衔ID
+	required bool isMax			= 2; //是否为本赛季最高军衔
+}

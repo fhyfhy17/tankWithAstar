@@ -1,0 +1,107 @@
+/********************************************************************
+*	filename: 	msg_12_campaign.proto
+*	purpose:	战役
+*
+*********************************************************************/
+
+package PROTO_CAMP;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "CAMP_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_CAMP = 12;
+}
+
+enum CMD_ID {
+	CTS_CAMP_READY		= 1; //资源加载完毕请求开始(空结构)
+	STC_CAMP_READY		= 2; //资源加载完毕返回
+	
+	STC_CAMP_OVER		= 3; //战斗结束
+	
+	CTS_CAMP_LIST		= 4; //请求战役关卡列表
+	STC_CAMP_LIST		= 5; //返回战役关卡列表
+	
+	CTS_CAMP_EXIT		= 6; //离开战役(空消息)
+	
+	CTS_CAMP_BOX		= 7; //请求战役奖励列表
+	STC_CAMP_BOX		= 8; //返回战役奖励
+	
+	CTS_CAMP_BOX_DRAW	= 9; //领取战役宝箱奖励
+	STC_CAMP_BOX_DRAW	= 10; //返回领取奖励结果
+}
+
+//战役准备开始
+message STC_CAMP_READY_MSG {
+	required uint32 readyTime	= 1; //准备倒计时(单位:秒)
+	required uint32 overTime	= 2; //比赛时长(单位:秒) -1:为不限时常
+}
+
+
+//比赛结束
+message STC_CAMP_OVER_MSG {
+	required bool win					= 1; //是否胜利
+	optional bool first					= 2; //是否首次获胜
+	optional uint32 star				= 3; //获得星的数量
+	optional uint32 iron				= 4; //铁块奖励数量
+	repeated CampGoodsItem items 		= 5; //物品奖励
+}
+
+message CampGoodsItem {
+	required uint32 goodsId		= 1;
+	required uint32 num			= 2;
+}
+
+
+//请求战役列表
+message CTS_CAMP_LIST_MSG {
+	required uint32 warAreaId	= 1;	//战区ID号
+}
+
+
+//返回战役关卡列表
+message STC_CAMP_LIST_MSG {
+	repeated CampItem campItems		= 1; //战役列表
+}
+
+//战役列表Item
+message CampItem {
+	required uint32 id		= 1; //战役ID
+	required uint32 gateId	= 2; //关卡ID
+	required uint32 star	= 3; //获得星级
+}
+
+//战役宝箱列表
+message CTS_CAMP_BOX_MSG {
+	required uint32 id		= 1; //战役ID
+}
+
+//返回战役宝箱列表
+message STC_CAMP_BOX_MSG {
+	repeated CampBoxItem boxItem	= 1;
+}
+
+message CampBoxItem {
+	required uint32 id					= 1; //战役ID
+	required uint32 hard				= 2; //难度
+	required uint32 star				= 3; //需达成星级
+	required bool	hadDraw				= 4; //是否领取(true：已领取)
+	repeated CampGoodsItem goodsItem	= 5;
+}
+
+
+//领取战役奖励
+message CTS_CAMP_BOX_DRAW_MSG {
+	required uint32 id		= 1; //战役ID
+	required uint32 hard	= 2; //难度
+}
+
+
+//返回领取战役奖励
+message STC_CAMP_BOX_DRAW_MSG {
+	required uint32 result				= 1;
+	optional string info 				= 2;
+}
+

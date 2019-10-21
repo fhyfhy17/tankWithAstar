@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.2.xsd
+       http://www.springframework.org/schema/task   
+       http://www.springframework.org/schema/task/spring-task-3.2.xsd ">
+	
+	
+	<bean id="schedulerApp" class="com.ourpalm.tank.app.scheduler.SchedulerAppImpl" >
+    	<property name="scheduler" ref="schedulerFactoryBean" />
+    </bean>
+	
+	 <bean id="schedulerFactoryBean" autowire="no"  
+        class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+        <property name="autoStartup" value="false" />
+        <property name="triggers">  
+            <list>  
+                 <ref bean="taskTriggerDay" />
+                 <ref bean="taskTriggerWeek" />
+            </list>  
+        </property>  
+         <property name="quartzProperties">
+        	<props>
+            	<prop key="org.quartz.threadPool.threadCount">2</prop>
+        	</props>
+    	</property>
+    </bean>
+    
+    <bean id="task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+     <property name="targetObject" ref="schedulerApp" />  
+        <property name="targetMethod" value="update" />  
+        <property name="concurrent" value="false" />
+    </bean>  
+    
+    <bean id="taskTriggerDay" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail" ref="task" />  
+         <!-- 每天00点20秒 -->  
+       	<property name="cronExpression" value="20 0 0 * * ?" />  
+    </bean>
+    
+    
+    <!--  每周更新          -->
+    
+    <bean id="taskWeek" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+     <property name="targetObject" ref="schedulerApp" />  
+        <property name="targetMethod" value="updateWeek" />  
+        <property name="concurrent" value="false" />
+    </bean>  
+    
+    <bean id="taskTriggerWeek" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail" ref="taskWeek" />  
+         <!-- 每周一的00点30秒 -->  
+       	<property name="cronExpression" value="30 0 0 ? * MON" />  
+    </bean>
+    <!--  每周更新          -->
+</beans> 

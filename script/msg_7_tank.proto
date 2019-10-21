@@ -1,0 +1,433 @@
+/********************************************************************
+*
+*	filename: 	msg_7_tank.proto
+*	purpose:	坦克研发相关功能
+*
+*********************************************************************/
+
+package PROTO_TANK;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "TANK_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_TANK = 7;
+}
+
+
+enum CMD_ID {
+	CTS_TANK_LIST		= 1; //已拥有的坦克列表		(空命令)
+
+	CTS_TANK_BUY		= 3; //购买坦克				(CTS_TANK_BUY_MSG)
+	
+	STC_TANK_LIST		= 4; //返回已拥有的坦克列表	(STC_TANK_LIST_MSG)
+
+	STC_TANK_BUY		= 6; //购买坦克返回			(STC_TANK_BUY_MSG)
+	
+	CTS_WAREHOUSE_LIST	= 7; //常用坦克列表(空命令)
+	STC_WAREHOUSE_LIST	= 8; //返回常用坦克列表
+	
+	CTS_SAVE_WAREHOUSE	= 9; //保存常用坦克列表
+	STC_SAVE_WAREHOUSE  = 10;
+	
+	CTS_WAREHOUSE_SCORE	= 11; //常用坦克比赛成绩
+	STC_WAREHOUSE_SCORE	= 12; //返回
+	
+	CTS_GOODS_WAR_CHANGE = 13; //添加或更换战场道具
+	STC_GOODS_WAR_CHANGE = 14; 
+	
+	CTS_GOODS_WAR_CLEAR	 = 15; //清空道具列表
+	STC_GOODS_WAR_CLEAR	 = 16;
+	
+	
+	CTS_CHANGE_MAINTANK  = 19;	//更换主战坦克
+	STC_CHANGE_MAINTANK	 = 20;
+	
+	CTS_RESEARCH_COST	 = 21;	//获取研发坦克花费
+	STC_RESEARCH_COST	 = 22;
+		
+	STC_TANK_UPDATE_PUSH = 23; //tank更新主推
+	
+	CTS_TANK_EXP_TRANSLATE= 24;	//坦克经验 转为全局坦克经验
+	STC_TANK_EXP_TRANSLATE= 25;
+	
+	CTS_GOLD_TANK_LIST	 = 26;	//请求金币坦克列表（空消息）
+	STC_GOLD_TANK_LIST	 = 27;
+	
+	CTS_GOLD_TANK_BUY	 = 28;	//金币坦克购买
+	
+	CTS_BUYPARK			 = 29;  //购买车位
+	STC_BUYPARK          = 30;  //购买车位返回
+	CTS_BUYPARK_GOLD	 = 31;  //购买车位花费
+	STC_BUYPARK_GOLD     = 32;  //购买车位花费返回
+	
+	CTS_STRENGTHEN		 = 33;	//新强化
+	STC_STRENGTHEN	     = 34;	//新强化返回
+	CTS_OPEN_GROOVE_SHOW = 35;	//开槽信息
+	STC_OPEN_GROOVE_SHOW = 36;	//开槽信息返回
+	CTS_OPEN_GROOVE		 = 37;  //开槽
+	STC_OPEN_GROOVE		 = 38;  //开槽返回 
+	CTS_CLEAR_FREEZE	 = 39;  //消除冷却
+	STC_CLEAR_FREEZE	 = 40;  //消除冷却返回
+	CTS_ONE_KEY_STRENGTHEN 	=41;// 一键强化需要金币数
+	STC_ONE_KEY_STRENGTHEN 	=42;// 一键强化需要金币数返回
+	CTS_UP_DOWN 			=43;// 装和卸
+	STC_UP_DOWN				=44;// 装和卸返回
+	
+	CTS_TANK_DEVELOP_LIST   = 45;//坦克列表
+	STC_TANK_DEVELOP_LIST   = 46;//坦克列表返回
+	CTS_TANK_DEVELOP		= 47;//坦克研发
+	STC_TANK_DEVELOP		= 48;//坦克研发返回
+	
+}
+
+
+enum COUNTRY {
+	US		= 1; 	//美国
+	SU		= 2;	//苏联
+	DE		= 3;	//德国
+	ES		= 4;	//英国
+}
+
+message STC_TANK_LIST_MSG {
+	repeated TankItem tanks		= 1; //坦克列表
+	required int32 park			= 2; //已拥有的车位
+	optional Freeze_Info freezeInfo		= 3;   //冷却体
+}
+
+message TankItem {
+	required uint32 tankId				= 1; //坦克模板ID
+	required uint32 tankExp				= 2;	//坦克经验值
+	required uint32 tired				= 3;	//疲劳值
+	required uint32 tiredMax			= 4;	//疲劳最大值
+	repeated PartNewInfo infos			= 5;	//新改装配件体s
+	optional int32 grooveNum			= 6;	//当前已激活的槽位
+    optional int32 partOnNum			= 7;	//当前已装备的槽位
+}
+
+
+
+message CTS_TANK_BUY_MSG {
+	required uint32 tankId			= 1; //购买坦克ID
+}
+
+message STC_TANK_BUY_MSG {
+	required uint32 result			= 1; // 1：成功 0：失败
+	required string info			= 2; //错误提示信息
+	optional TankItem tank			= 3; //所购买的新坦克
+	optional TANK_DEVELOP_INFO developInfo = 4;// 坦克状态	
+}
+
+//常用坦克列表
+message STC_WAREHOUSE_LIST_MSG {
+	repeated WarehouseItem item		= 1; //坦克信息
+}
+
+message WarehouseItem {
+	required uint32 tankId				= 1; //坦克模板ID
+	required uint32 part1				= 2; //配件1
+	required uint32 part2				= 3;
+	required uint32 part3				= 4;
+	required uint32 part4				= 5;
+	required uint32 elitePart1			= 6; //精英配件1
+	required uint32 elitePart2			= 7; 
+	required bool hasMain				= 8; //是否为主战坦克	
+	repeated GoodsWarItem goodsItem	 	= 9; //所使用的战场道具
+}
+
+message PartInfoItem {
+	required uint32 id 			= 1;	//配件id
+	required uint32 cost 		= 2;	//升级花费
+	required uint32 tankExp		= 3;	//升级所需坦克经验		
+	optional uint32 goodsId 	= 4;	//升级道具
+	optional uint32 goodsNum 	= 5;	//升级所需道具数量
+}
+
+//战场道具列表
+message GoodsWarItem {
+	required uint32 index	= 1;  //格子位置（从 0 开始）
+	required uint32 id		= 2;  //道具ID
+}
+
+
+message CTS_WAREHOUSE_SCORE_MSG {
+	required uint32 roleId		= 1; 
+}
+
+message STC_WAREHOUSE_SCORE_MSG {
+	required uint32 roleId			= 1; 
+	repeated TankScoreItem item 	= 2; //战场成绩
+}
+
+message TankScoreItem {
+	required uint32 tankId			= 1; //坦克模板ID
+	required uint32 winCount		= 2; //胜利场次
+	required uint32 lostCount		= 3; //失败场次
+	required uint32 battleCount		= 4; //战斗力
+}
+
+
+message CTS_SAVE_WAREHOUSE_MSG {
+	repeated uint32 tankIds		= 1; //常用坦克列表
+}
+
+message STC_SAVE_WAREHOUSE_MSG {
+	required uint32 result 	= 1;	//1:成功 0:失败
+	required string info 	= 2;	//错误提示信息
+}
+
+
+message CTS_GOODS_WAR_CHANGE_MSG {
+	required uint32 tankId		= 1; //坦克模版id
+	required uint32 index		= 2; //格子索引（下标0开始）
+	required uint32 goodsId		= 3; //道具id
+}
+
+message STC_GOODS_WAR_CHANGE_MSG {
+	required uint32 result			= 1; //1：成功 0:失败
+	optional string info 			= 2; //错误提示
+	optional uint32 tankId			= 3; //坦克模版id
+	optional GoodsWarItem item		= 4;
+}
+
+message CTS_GOODS_WAR_CLEAR_MSG {
+	required uint32 tankId 	= 1; //坦克模版id
+	required uint32 type	= 2; // 1:清空炮弹 2:清空道具
+}
+
+message STC_GOODS_WAR_CLEAR_MSG {
+	required uint32 tankId 	= 1; //坦克模版id
+	required uint32 type	= 2; // 1:清空炮弹 2:清空道具
+}
+
+
+//更换主战坦克
+message CTS_CHANGE_MAINTANK_MSG {
+	required uint32 tankId	= 1; //坦克Id
+}
+message STC_CHANGE_MAINTANK_MSG {
+	required bool success   = 1;
+	optional string info 	= 2; //提示
+}
+
+message CTS_RESEARCH_COST_MSG {
+	required uint32 tankId	= 1;	//坦克模板ID
+}
+
+message STC_RESEARCH_COST_MSG {
+	required uint32 cost	= 1; 	//花费
+	required uint32 tankId	= 2;	//请求的坦克id
+}
+
+message STC_TANK_UPDATE_PUSH_MSG {
+	required TankItem tank = 1;
+}
+
+message CTS_TANK_EXP_TRANSLATE_MSG {
+	repeated uint32 tankIds		 = 1;
+	required uint32 translateExp = 2;
+	required uint32 type 		 = 3; //转换类型1:金币，2:银币 
+}
+
+message TankTranslateExpItem {
+	required uint32 tankId		= 1;
+	required uint32 tankExp 	= 2;	//剩余经验
+}
+
+message STC_TANK_EXP_TRANSLATE_MSG {
+	required bool success 				= 1;
+	optional string info 				= 2;
+	repeated TankTranslateExpItem tanks = 3;
+	required uint32 tankExp 			= 4;
+}
+
+message GoldTankItem {
+	required uint32 tankId	= 1;	
+	required uint32 gold	= 2;	//所需金币
+	required uint32 diamond	= 3;	//所需钻石
+}
+
+message STC_GOLD_TANK_LIST_MSG {
+	repeated GoldTankItem tanks		= 1;
+}
+
+message CTS_GOLD_TANK_BUY_MSG {
+	required uint32 tankId 		= 1;	//购买id
+	required uint32 moneyType 	= 2;	//购买货币类型，（与RoleAttr对应）
+}
+
+//购买车位
+message CTS_BUYPARK_MSG{	
+}
+message STC_BUYPARK_MSG{
+	required bool result =1;// 
+	required int32 park =2;//当前车位
+	optional string info =3;//
+}
+message CTS_BUYPARK_GOLD_MSG{	
+}
+message STC_BUYPARK_GOLD_MSG{
+	required int32 gold =1;//金币
+}
+
+//===============新改装 ===============================================
+//配件信息体
+message PartNewInfo{
+	optional PART_INDEX index =1;//索引
+	optional int32 id    =2;//配件ID
+	optional bool  active=3;//是否激活
+	optional Strengthen_Info strengthenInfo =4;//强化体
+	optional int32 level =5;//配件等级
+	optional string name =6;//名字
+	optional string desc =7;//描述
+}
+
+enum PART_INDEX{
+	HIT			=1;//伤害
+	PRECISION	=2;//精度
+	STAB		=3;//穿透
+	ARMOR		=4;//装甲
+	HP			=5;//生命
+	SPEED		=6;//速度
+	TURN		=7;//转向
+}
+//强化
+message CTS_STRENGTHEN_MSG{
+	required int32  type			= 1;//1银币强化2金币保成强化，3一键金币保成无CD强化
+	required uint32 tankId			= 2; //坦克模板ID
+	required PART_INDEX partIndex	= 3; //配件位置
+	optional int32  level			= 4;//3type下的  要强化到的等级 
+}
+//强化返回
+message STC_STRENGTHEN_MSG {
+	required uint32 result			= 1; // 1：成功 0：失败
+	required string info			= 2; //错误提示信息
+	optional uint32 tankId			= 3; //坦克模板ID
+	optional PartNewInfo part		= 4; //配件
+	optional Freeze_Info freezeInfo = 5; //冷却体
+	optional int32  success			= 6; //1强化成功 0强化失败
+}
+//强化体
+message Strengthen_Info{
+	optional int32  strengthenSuccessRate =1;//强化成功率
+	optional int32 iron  =2;//强化花费银币
+	optional int32 gold  =3;//保成 强化需要金币
+}
+//冷却体
+message Freeze_Info{
+	optional int64  freezeTime		= 1; //剩余强化冷却时间	 毫秒
+	optional int32  freezeTimeAll   = 2; //强化冷却时间上限 小时
+	optional bool   canFreeze		= 3; //是否可以强化
+	optional int32  unFreezeGold	= 4; //消除强化时间的金币数
+}
+
+//开槽信息
+message CTS_OPEN_GROOVE_SHOW_MSG{
+	required uint32 tankId			= 1; //坦克模板ID
+}
+//开槽信息返回
+message STC_OPEN_GROOVE_SHOW_MSG{
+	optional int32 drawGold =1;//抽奖金币
+	optional int32 buyGold  =2;//直接购买金币
+}
+//开槽
+message CTS_OPEN_GROOVE_MSG{
+	required int32 type =1;//1抽奖 2直接购买
+	required uint32 tankId	= 2; //坦克模板ID
+}
+//开槽返回 
+message STC_OPEN_GROOVE_MSG{
+	required int32 type				= 1;//1抽奖2直接购买
+	required int32 result			= 2; // 1：成功 0：失败
+	required string info			= 3; //错误提示信息
+	optional RewardItem item		= 4;//抽奖没得到开槽，所得奖励，目前是银币，物品两种
+	optional int32 grooveNum		= 5;//当前槽位数	
+    optional int32 partOnNum		= 6;//当前已装备的槽位	
+}
+
+
+
+//奖励类型
+enum RewardType {
+	TANK	= 1;	//坦克
+	MEMBER	= 2;	//船员
+	GOODS	= 3;	//物品
+	GOLD	= 4;	//金币
+	IRON	= 5;	//银币
+	HONOR	= 6;	//荣誉
+	EXP		= 7;	//经验 
+	TANKEXP	= 8; 	//全局经验 
+	DIAMONDS = 9;	//钻石
+}
+
+//奖励内容
+message RewardItem {
+	optional uint32 id			= 1;	//id
+	optional uint32 count		= 2;	//数量
+	optional RewardType type 	= 3; 	//类型
+}
+
+//消除冷却
+message CTS_CLEAR_FREEZE_MSG{
+}
+//消除冷却返回
+message STC_CLEAR_FREEZE_MSG{
+	required int32 result			= 1; // 1：成功 0：失败
+	required string info			= 2; //错误提示信息
+	optional Freeze_Info freezeInfo = 3; //冷却体	
+}
+//一键强化需要金币数
+message  CTS_ONE_KEY_STRENGTHEN_MSG{
+	required int32 level =1; //目标等级
+	required uint32 tankId			= 2; //坦克模板ID
+	required PART_INDEX partIndex	= 3; //配件位置
+	
+}
+//一键强化需要金币数返回
+message  STC_ONE_KEY_STRENGTHEN_MSG{
+	required int32 gold =1; //共需要的金币
+}
+//装和卸
+message CTS_UP_DOWN_MSG{
+	required int32  type			= 1;//1装 2 卸
+	required uint32 tankId			= 2; //坦克模板ID
+	required PART_INDEX partIndex	= 3; //配件位置
+}
+//装和卸 返回
+message STC_UP_DOWN_MSG {
+	required uint32 result			= 1; // 1：成功 0：失败
+	required string info			= 2; //错误提示信息
+	optional uint32 tankId			= 3; //坦克模板ID
+	optional PartNewInfo part		= 4; //配件
+	optional int32 grooveNum		= 5;//当前槽位数	
+    optional int32 partOnNum		= 6;//当前已装备的槽位	
+}
+
+//坦克树体
+message TANK_DEVELOP_INFO{
+	optional int32 tankTemplateId = 1 ;//坦克模板ID
+	optional int32 state		  = 2 ;///  2可购买 3已购买
+}
+
+
+//请求坦克树
+message CTS_TANK_DEVELOP_LIST_MSG{
+
+}
+
+//请求坦克树返回
+message STC_TANK_DEVELOP_LIST_MSG{
+	repeated TANK_DEVELOP_INFO infos=1;
+}
+//研发
+message CTS_TANK_DEVELOP_MSG{
+	required int32 tankTemplateId =1;//坦克模板ID
+}
+//研发返回
+message STC_TANK_DEVELOP_MSG{
+	optional int32 result			= 1; // 1：成功 0：失败
+	optional string desc			= 2; //错误提示信息
+	optional TANK_DEVELOP_INFO info = 3;//	坦克状态
+}

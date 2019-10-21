@@ -1,0 +1,320 @@
+/********************************************************************
+*
+*	filename: 	msg_0_serv.proto
+*	purpose:	服务器内部消息
+*
+*********************************************************************/
+
+package PROTO_TANK;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "SERV_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_SERV = 0;
+}
+
+
+enum CMD_ID {
+	GTS_OFFLINE						= 1; //网关通知游戏玩家下线
+	STG_OFFLINE						= 2; //游戏通知网关玩家下线
+	GTA_ROLE_COUNT					= 3; //网关通知分区当前连接数
+
+	STM_MATCH						= 4; //申请匹配
+	MTS_MATCH						= 5; //匹配返回
+
+	MTS_MATCH_RST					= 6; //匹配通知游戏匹配结果
+	STG_SWITCH_LINK					= 7; //游戏通知网关切换链接
+
+	ITS_SYS_REFRESH					= 8; //在线玩家系统更新(内部协议)
+
+	STS_OFFLINE_RELOGIN 			= 9; //断线重连登录
+
+	STS_ACTIVE_REWS					= 10; //激活码兑换礼包
+
+	OTS_SYNC_MATCH_INFO 			= 11; //第三方同步比赛数据
+	STO_SYNC_MATCH_INFO				= 12; //返回同步状态
+
+	STO_SYNC_MATCH_RESULT 			= 13; //向第三方返回比赛结果
+
+	OTS_MATCH_RESULT_QUERY		 	= 14; //第三方查询比赛结果
+	STO_MATCH_RESULT_QUERY 			= 15; //返回查询结果
+
+	GMTS_SEND_REWARD 				= 16; //gm向游戏服，发送全服奖励
+	GMTS_PROMPT 					= 17; //gm向游戏服，发送提示
+	GMTS_NOTICE						= 18; //游戏走马灯公告
+
+	STL_LOG							= 19; //向log服，发送log
+
+	STS_IMESSAGE_SEND				= 20; //发送聊天消息
+
+	STP_ROLE_LOGIN					= 21; //游戏服务器告知平台用户登录,由平台通知第三方
+
+	PTS_PAY_RESULT					= 22; //平台通知游戏服务器支付结果
+
+	GTG_ONLINE_COUNT				= 23; //网关通知GM当前在线人数
+
+	STP_CHAT_CONTROL				= 24; //游戏服给匹配发送聊天监控消息
+	PTS_BAN_ROLE					= 25; //平台通知游戏服 角色封停/禁言
+
+	STS_LOGIN						= 26; //内部登录
+	STS_OFFLINE						= 27; //内部下线
+
+	STDB_DATA_BACKUP				= 28;	//数据备份
+	STP_TX_ACTIVE_RESULT			= 30;	//活动（蓝钻黄钻等返回）
+
+	GMTS_SEND_CMD					= 31;	//GM向服务器发送指令
+}
+
+
+message GTS_OFFLINE_MSG {
+	required uint32 ioId		= 1; //ioId
+	required bool offline		= 2; //下线操作为true
+}
+
+message STG_OFFLINE_MSG {
+	required uint32 ioId		= 1; //ioId
+	required string fromNode	= 2; //来自节点名
+}
+
+message GTA_ROLE_COUNT_MSG {
+	required string ipPort		= 1;
+	required uint32 count		= 2; //当前连接数
+}
+
+
+//申请匹配
+message STM_MATCH_MSG {
+	required uint32 type		= 1; //比赛类型
+	required string teamId		= 2; //队伍id
+	required uint32 score		= 3; //匹配分值
+	required uint32 minScore	= 4; //允许匹配最低分值
+	required uint32 matchType	= 5; //匹配类型 1：机器人 2：机器人与玩家 3：玩家
+	required uint32 mapIndex	= 6; //地图索引ID
+	repeated MatchItem items	= 7; //匹配列表
+	required int32  titleGrade	= 8; //匹配军衔段
+	optional int32 preseason	= 9; //新手赛 -1为不是新手赛
+}
+
+//申请匹配返回
+message MTS_MATCH_MSG {
+	required string teamId		= 1; //队伍id
+}
+
+//推送匹配结果
+message MTS_MATCH_RST_MSG {
+	required uint32 type				= 1; //比赛类型
+	required uint32 mapIndex			= 2; //地图索引ID
+	required uint32 teamMaxScore		= 3; //队伍最大匹配分
+	repeated MatchTeam teams			= 4; //匹配列表
+	required string weakTeam			= 5; //弱队遭遇强敌
+	optional int32 preseason			= 6; //新手赛 -1为不是新手赛
+}
+
+message MatchTeam {
+	required string teamId   = 1;
+	repeated MatchItem items = 2;
+}
+
+message MatchItem {
+	required uint32 ioId		= 1;
+	required uint32 roleId		= 2;
+	required uint32 camp		= 3; //阵营类型
+	required string gateNode	= 4; //所在网关节点
+	required uint32 tankId		= 5;
+	required uint32 titleId		= 6; //军衔ID
+	required uint32 battleScore	= 7; //战斗力
+	required uint32 type        = 8; //类型
+	required uint32 matchScore	= 9; //匹配队伍平均分
+	required int32  tankLevel	= 10; //主战坦克级别
+	optional int32 friendId		= 11;//好友（为战斗加成用）
+	optional int32 corpMemberId	= 12;//军团（为战斗加成用）
+}
+
+//申请切换链接
+message STG_SWITCH_LINK_MSG {
+	required uint32 ioId			= 1; //ioId
+	required string newNode			= 2; //新节点名称
+}
+
+//断线重连登录
+message STS_OFFLINE_RELOGIN_MSG {
+	required uint32 ioId			= 1; //ioId
+	required string gateNode		= 2; //所在的网关节点
+	required string targetNode		= 3; //转发目标节点
+	required uint32 roleId			= 4; //角色ID
+	required uint32 warType 		= 5; //战场类型
+	required uint32 relinkType		= 6; //连接类型
+}
+
+//激活码兑换礼包
+message STS_ACTIVE_REWS_MSG {
+	required uint32 roleId			= 1; //角色ID
+	required uint32 goodsId 		= 2; 	//礼包ID
+}
+
+//第三方同步比赛数据
+message OTS_SYNC_MATCH_INFO_MSG {
+	required string match_info = 1;
+}
+message STO_SYNC_MATCH_INFO_MSG {
+	required uint32 code = 1;
+}
+
+//向第三方返回比赛结果
+message STO_MATCH_RESULT_MSG {
+	required string match_result = 1;
+}
+
+//第三方查询比赛结果
+message OTS_MATCH_RESULT_QUERY_MSG {
+	required uint32 match_id = 1;
+}
+message STO_MATCH_RESULT_QUERY_MSG {
+	required string match_result = 1;
+}
+
+message GMTS_SEND_REWARD_MSG {
+	required uint32 roleId 		= 1;
+	optional uint32 goodsId  	= 2;
+	optional uint32 goodsNum 	= 3;
+	optional uint32 gold  		= 4;
+	optional uint32 iron  		= 5;
+	optional string gmTip 		= 6;
+}
+
+message GMTS_PROMPT_MSG {
+	required uint32 roleId 		= 1;
+	required uint32 prompt 		= 2;
+	required uint32 areaId 		= 3;	//分区
+	required string serviceId 	= 4;	//渠道
+}
+
+message GMTS_NOTICE_MSG {
+	required uint32 areaId		= 1;
+	required string notice		= 2;	//公告
+	required uint32 playCount	= 3;	//播放次数
+	required uint32 gap			= 4;	//滚动间隔（s）
+}
+
+message STL_LOG_MSG {
+	required string logName = 1;	//日志名称
+	required string log		= 2;	//日志内容
+}
+
+message STS_IMESSAGE_SEND_MSG {
+	required string msg				= 1;	    //聊天内容
+	required uint32 type			= 2;	    //频道
+	optional uint32 areaId			= 3;	    //区服
+	optional uint32 receiverId		= 4;		//接收者roleId
+}
+
+
+//游戏服务器告知平台用户登录,由平台通知第三方
+message STP_ROLE_LOGIN_MSG {
+	optional string serviceId	= 1;	//用于区分渠道登录
+	optional string returnJson	= 2;	//用户中心返回的第三方登录返回(JSON格式)
+	optional uint32	roleId		= 3;
+	optional uint32 level		= 4;
+	optional string roleName	= 5;
+	optional uint32 areaId		= 6;
+	optional string createTime	= 7;
+	optional string nodeName	= 8;
+	optional int32  ioId		= 9;
+}
+
+
+//平台服务器通知游戏服务器发货
+message PTS_PAY_RESULT_MSG {
+	optional string orderId			= 1;	//订单号
+	optional int32  type			= 2;	//1蓝钻 2黄钻 3充值
+	optional string channelId		= 3;	//渠道ID
+	optional uint32 propId			= 4;	//商品ID
+	optional uint32 roleId			= 5;	//角色ID
+	optional uint32 actualPrice		= 6;	//实际充值金额 转换过的amt  ，单位另定
+	optional string rebateType		= 7;	//返利类型 GOODID 按照物品返利 PRICE 按照充值金额返利
+	optional int32 rebatePrice		= 8;	//返利金额
+	optional int32 rebateGoodsId	= 9;	//返利物品id
+	optional int32  pubacctPayAmt   = 10;	//抵扣券金额  转换过的，单位另定
+	optional int32  itemNum  		= 11;	//购买个数
+
+}
+
+//活动（蓝钻黄钻等）和充值  平台服务器通知游戏服务器发货  返回
+message STP_TX_ACTIVE_RESULT_MSG {
+	optional string orderId			= 1;	//订单号
+	optional int32  type			= 2;    //1蓝钻 2黄钻 3充值
+	optional string result			= 3;	//1成功 0失败
+	optional int32  failType		= 4;	//1实际充值金额小于配置金额  2商品不存在
+}
+
+
+
+//网关通知GM当前进程信息（包括更新在线人数，启动时间，代码版本等等）
+message GTG_ONLINE_COUNT_MSG {
+	required string ip			= 1; //IP地址
+	required uint32 port		= 2; //端口
+	required uint32 count		= 3; //在线人数
+	required uint32 processType	= 4; //进程类型（1：gateway，2：tank，3：area，4：gm，5：match，6：platform）
+	required uint32 startTime	= 5; //进程重启时间
+	required uint32 versionCode	= 6; //代码版本
+}
+
+//游戏服向平台发送聊天监控消息
+message STP_CHAT_CONTROL_MSG {
+	required string areaId		= 1; //分区id
+	required string userId		= 2;
+	required uint32 roleId		= 3;
+	required string roleName	= 4;
+	required uint32 chatChannel	= 5; //聊天频道
+	required string chatInfo	= 6; //聊天内容
+	required string chatTime	= 7; //聊天时间 格式 yyyy-MM-dd HH:mm:ss
+}
+
+
+//平台通知游戏服 角色封停/禁言
+message PTS_BAN_ROLE_MSG {
+	required uint32 type 		= 1; // 1:封停角色  2:禁言
+	repeated BanItem items		= 2;
+}
+
+//封停item
+message BanItem {
+	required uint32 roleId 		= 1;
+	required string beginTime	= 2; //封停开始时间(格式 yyyy-MM-dd HH:mm:ss)
+	required string endTime		= 3; //封停结束时间(格式 yyyy-MM-dd HH:mm:ss)
+}
+
+//内部登录
+message STS_LOGIN_MSG {
+	required uint32 roleId		= 1;
+	required bool login			= 2;
+}
+
+//内部下线
+message STS_OFFLINE_MSG {
+	required uint32 roleId		= 1;
+	required bool offline		= 2;
+}
+
+
+
+enum RedisKeyType{
+	STRING 	= 1;
+	MAP 	= 2;
+	LIST	= 3;
+	SET		= 4;
+	SortedSet = 5;
+}
+
+message STDB_DATA_BACKUP_MSG {
+	required string redisKey	= 1;	//存储键
+	required RedisKeyType type	= 2;	//键类型
+}
+
+message GMTS_SEND_CMD_MSG {
+	required uint32 cmdId 		= 1;	//指令ID
+	optional string params  	= 2;	//json格式
+}

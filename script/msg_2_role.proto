@@ -1,0 +1,708 @@
+/********************************************************************
+*	filename: 	ROLE_MSG.proto
+*	purpose:	玩家角色信息
+*
+* 2015-12-22
+* 1. 添加 STC_ROLE_INFO_MSG 协议
+*
+* 2015-12-23
+* 1. STC_LOGIN_MSG 添加军衔ID
+*********************************************************************/
+
+package PROTO_ROLE;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "ROLE_MSG";
+
+
+enum CMD_TYPE {
+    CMD_TYPE_ROLE = 2;
+};
+
+enum CMD_ID {
+    CTS_LOGIN    	        = 1;   //登录协议
+    CTS_CREATE				= 2;   //创建角色
+	CTS_ROLE_INFO			= 3;   //角色信息
+	CTS_RENAME				= 4;   //改名
+
+    STC_LOGIN				= 10;  //登录返回
+	STC_ROLE_ATTR_SYNC		= 11;  //角色属性同步
+	STC_ROLE_INFO			= 12;  //角色信息
+	STC_RENAME				= 13;   //改名
+
+	CTS_HEARTBEAT			= 14; 	//心跳请求
+	STC_HEARTBEAT			= 15;	//心跳返回
+
+	STC_PROMPT				= 16;	//消息提醒
+
+	CTS_TANK_SCORE			= 17;	//请求坦克战斗力
+	STC_TANK_SCORE 			= 18; 	//请求返回坦克战斗力
+
+	CTS_SAVE_TEACH			= 19;	//保存新手教学进度
+
+	STC_UP_LEVEL			= 20;	//服务器主推升级提示
+
+	STC_MUTI_LOGIN			= 21; 	//该账号异地登录(空命令)
+
+	STC_TIPS				= 22;	//服务器主推提示信息
+	STC_NOTICE				= 23;   //游戏公告
+
+	STC_EXCEP_OFFLINE		= 24;	//玩家数据异常,踢下线提示
+
+	STC_IMESSAGE			= 26;	//聊天消息推送
+
+	CTS_IMESSAGE_SEND		= 27;	//发送聊天消息
+	STC_IMESSAGE_SEND		= 28;	//返回
+
+	CTS_DRAW_TEACH_REWARD	= 29;	//领取新手引导奖励(空命令)
+	STC_DRAW_TEACH_REWARD	= 30;	//领取新手引导奖励返回
+
+	CTS_VIP_LIST			= 31;	//获取vip列表(空消息)
+	STC_VIP_LIST			= 32;
+
+	CTS_VIP_DRAW			= 33;	//领取vip奖励
+	STC_VIP_DRAW			= 34;
+
+	STC_VIP_LEVEL_UP		= 35;	//vip升级
+
+	CTS_PAY_LIST			= 36;	//请求充值列表(空消息)
+	STC_PAY_LIST			= 37;	//返回充值列表
+
+	CTS_GOLD_TO_IRON		= 38;	//金币换银币
+	STC_GOLD_TO_IRON		= 39;
+
+	STC_REWARDS_INFO		= 40;	//主推获得奖励信息
+
+	CTS_DIAMOND_TO_GOLD		= 41;	//钻石换金币
+	STC_DIAMOND_TO_GOLD		= 42;
+
+	STC_SYSTEM_IMESSAGE		= 43; 	//服务器推送系统消息
+
+	STC_PAY_SUCCESS			= 44;	//充值成功
+	
+	
+		
+	CTS_BLUE				= 45;	//蓝钻信息
+	STC_BLUE				= 46;	//
+
+	CTS_BLUE_GET 			= 47;   //领取蓝钻礼包 
+	STC_BLUE_GET			= 48; 
+	
+	BLUE_LEVEL_INFO		    = 49;   //蓝钻等级体
+
+	CTS_QQHall				= 50;
+	STC_QQHall				= 51;	//QQ大厅礼包信息
+
+	CTS_QQHall_GET			= 52;   //领取QQ大厅礼包 
+	STC_QQHall_GET			= 53; 
+	
+	BLUE_EXPIRE_INFO		= 54;   //蓝钻过期
+	ITEM_INFO               = 55;   //物品体
+	QQHall_INFO				= 56;   //QQ大厅信息体
+	
+	CTS_GET_GAMESERVER_INFO = 57;   //获取nodeName和ioId
+	STC_GET_GAMESERVER_INFO = 58;   //获取nodeName和ioId返回
+	
+	CTS_GetPfinfoStr		= 59;	//获取蓝钻PF
+	STC_GetPfinfoStr		= 60;	//获取蓝钻PF返回
+	
+	CTS_YELLOW				= 61;	//黄钻信息
+	STC_YELLOW		    	= 62;	//
+
+	CTS_YELLOW_GET 			= 63;   //领取黄钻礼包 
+	STC_YELLOW_GET			= 64; 
+	
+	CTS_GetYellowPfinfoStr		= 65;	//获取黄钻PF
+	STC_GetYellowPfinfoStr		= 66;	//获取黄钻PF返回
+	STC_SHOW_TIP				= 67;	//单独发送一个TIP
+	CTS_OFFLINE					= 68;	//下线协议(空命令)
+	
+	CTS_QQZone					= 69; 	//QQ空间信息
+	STC_QQZone					= 70;	//QQ空间信息返回
+	CTS_QQZone_GET				= 71;	//QQ空间礼包领取
+	STC_QQZone_GET				= 72;	//QQ空间礼包领取返回
+};
+
+//角色属性类型
+enum RoleAttr {
+	level	= 1;	//等级
+	exp		= 2;	//经验值
+	gold	= 3;	//金币
+	diamonds= 4;	//钻石
+	iron	= 5;	//铁块
+	tankExp	= 6;  	//坦克经验
+	honor	= 7; 	//荣誉
+	vip     = 8;	//vip等级
+}
+
+//客户端登录请求消息
+message CTS_LOGIN_MSG {
+	required string id			= 1; //tokenId
+	required uint32 areaId		= 2; //分区ID
+	required string serviceId	= 3; //区分渠道号
+	required string version		= 4; //客户端版本号
+	required string serviceCode = 5; //特征串
+	required string key 		= 6; //平台动态key，相当于密码
+	required string clientIp 	= 7; //登录密码
+	required string pfId 		= 8; //平台ID，如果是 qqgame 传10
+};
+
+
+enum LOGIN_STATE {
+	SUCCESS			= 1; //成功
+	NO_ROLE 		= 2; //没有角色，需要创建
+	FAILURE 		= 3; //登录失败，提示信息中获取错误信息
+	ERROR_CREATE 	= 4; //创建角色失败
+	CREATE_SUCCESS	= 5; //创建角色成功
+	DISABLE			= 6; //被封号
+};
+
+//提醒类型消息推送
+enum PROMPT {
+	ACTIVE			= 1; 	//活跃完成提醒
+	ACHIEVEMENT 	= 2;	//成就
+	MAIL 			= 3;	//邮件
+	MASTER_QUEST	= 4; 	//主线任务
+	DAILY_ACTIVITY	= 5;	//日常活动
+	MEMBER_LOTTERY	= 6; 	//免费抽卡
+	RED_PACKET 		= 7;	//大厅红包
+	DAILY_GRAB		= 8;	//大厅每日必秒
+	FIRST_PAY		= 9;	//首充
+}
+
+
+//服务端登录返回消息
+message STC_LOGIN_MSG {
+	required LOGIN_STATE state		= 1; 	//登录标识
+	optional string info			= 2; 	//错误信息提示(账号异地登录、被封号提示、创建角色名重复)
+	optional uint32 roleId          = 3;	//角色ID
+	optional string name        	= 4;	//名字
+	optional uint32 level       	= 5;	//等级
+	optional uint32	exp         	= 6;	//当前经验
+	optional uint32 gold        	= 7;	//金币
+	optional uint32 diamonds    	= 8;	//钻石
+	optional uint32 titleId			= 9;	//军衔ID
+	optional uint32 corpsId			= 10;	//军团id
+	optional uint32 iron			= 11;	//银币
+	optional uint32 mainTankId		= 12;	//主战坦克
+	optional uint32 goldToIronRate	= 13;	//金币换银币比率（1：30）
+	optional uint32 teachId			= 14;	//新手教学进度
+	optional uint32 honor			= 15; 	//荣誉点
+	optional uint32 teachRwd		= 16;	//新手引导奖励(大于0 表示未领取)
+	optional uint32 roleTankExp		= 17;	//角色全局坦克经验
+	optional float toTankExpGoldRate	= 18; //转换全局坦克经验金币花费比率 (1点坦克经验对应金币数)
+	optional float toTankExpIronRate	= 19; //转换全局坦克经验银币花费比率 (1点坦克经验对应银币数)
+	optional string teamId			= 20;	//队伍id
+	optional bool 	activeFlag		= 21;	//是否显示对换激活码,客服
+	optional uint32 vipLevel 		= 22;	//vip等级
+	optional uint32 diamondToGoldRate 	= 23;	//钻石换金币比率
+	optional string pfUserInfo			= 24; 	//平台信息，汇总成一个json格式，以后可以动态扩展
+	optional string pfYellowUserInfo	= 25; 	//平台黄钻信息，汇总成一个json格式，以后可以动态扩展
+};
+
+
+
+//客户端请求创建角色
+message CTS_CREATE_MSG {
+	required string id			= 1;	//uid
+	required string roleName	= 2;	//角色名称
+	required uint32 areaId		= 3;	//分区ID
+	required uint32 country		= 4;	//国家
+	required string serviceId	= 5; 	//区分渠道号
+	required string tokenId		= 6;	//tokenId
+	required string serviceCode = 7;	//特征串
+	required string key 		= 8; //平台动态key，相当于密码
+	required string clientIp 	= 9; //登录密码
+	required string pfId 		= 10; //平台ID，如果是 qqgame 传10
+};
+
+message RoleAttrItem {
+	required RoleAttr type		= 1; //属性类型
+	required uint32 value		= 2; //改变后的属性值
+}
+
+//属性变化消息
+message STC_ROLE_ATTR_SYNC_MSG {
+	required string source		= 1;  //来源
+	repeated RoleAttrItem attrs	= 2;  //变化的属性列表
+}
+
+
+//角色信息
+message CTS_ROLE_INFO_MSG {
+	required uint32 roleId = 1;//角色ID
+}
+
+//角色信息
+message STC_ROLE_INFO_MSG {
+	required string name 				= 1; 	//名字
+	required uint32 level 				= 2; 	//等级
+	required uint32 currArmyTitle 		= 3; 	//当前军衔
+	required uint32 seasonMaxArmyTitle	= 4; 	//本赛季最大军衔
+	required uint32 maxArmyTitle 		= 5; 	//历史最大军衔
+	required uint32 roleId				= 6;	//角色ID
+	required uint32 vipLvl				= 7;	//vip等级
+	required uint32 mvpCout				= 8;	//mvp累计次数
+	required uint32 mainTankId			= 9;	//主战坦克ID
+	required uint32 battleScore			= 10;	//战斗力
+	required uint32 enterCount			= 11; 	//出场次数
+	required uint32 winPro				= 12; 	//胜率
+	required uint32 maxHelper			= 13;	//最高助攻
+	required uint32 maxOut				= 14;	//最高输出
+	required uint32 maxBear				= 15;	//最高承受
+	required uint32 maxSeriesWin		= 16;	//最大连胜
+	required uint32 singleMaxKill		= 17;	//单场最高击杀数
+	required uint32 maxOneLifeKill		= 18;	//最多一生击杀数
+	required string createTime 			= 19;	//创建时间
+	required string lastLoginTime 		= 20;	//上次登录时间
+	required uint32 exp					= 21;	//当前经验值
+	required bool	hadElite			= 22;	//是否精英坦克
+	required string pfUserInfo 			= 23; 	//平台信息
+	optional string pfYellowUserInfo	= 24; 	//平台黄钻信息，汇总成一个json格式，以后可以动态扩展
+}
+
+
+//改名
+message CTS_RENAME_MSG {
+	required string name = 1;//新名字
+}
+
+//改名
+message STC_RENAME_MSG {
+	required bool  success = 1;
+	required string info = 2;
+}
+
+//推送消息返回
+message STC_PROMPT_MSG {
+	required PROMPT prompt	= 1; //提醒类型
+}
+
+//tank战斗力
+message CTS_TANK_SCORE_MSG {
+	required uint32 tankId 	= 1;
+}
+
+message STC_TANK_SCORE_MSG {
+	optional uint32 hp				= 1; 	//血量
+	optional uint32 atk				= 2;	//攻击力
+	optional uint32 fdef			= 3;	//前护甲
+	optional uint32 idef			= 4;	//侧护甲
+	optional uint32 bdef			= 5;	//后护甲
+	optional float reload			= 6;	//填弹时间
+	optional uint32 tankScore		= 7; 	//坦克战斗力
+	optional uint32 partScore 		= 8; 	//配件战斗力
+	optional uint32 eliteSocre		= 9; 	//精英战斗力
+	optional uint32 memberScore 	= 10;	//成员战斗力
+	optional float medalScore 		= 11; 	//勋章战斗力加成比
+}
+
+
+//保存新手教学进度
+message CTS_SAVE_TEACH_MSG {
+	required uint32 id		= 1;
+}
+
+
+//升级提示
+message STC_UP_LEVEL_MSG {
+	required uint32	curLevel	= 1; //当前等级
+}
+
+
+//提示信息
+message STC_TIPS_MSG {
+	required string tips		= 1; //提示信息
+}
+
+message STC_NOTICE_MSG {
+	required string notice		= 1;	//公告
+	required uint32 playCount	= 2;	//播放次数
+	required uint32 gap			= 3;	//滚动间隔（s）
+}
+
+//玩家数据异常,踢下线提示
+message STC_EXCEP_OFFLINE_MSG{
+	required string tips		= 1; //提示信息
+}
+
+//聊天，频道类型
+enum ChatMessageType {
+	World 		= 1;  	//本服
+    Country 	= 2;	//国家
+    Whisper 	= 4;	//私聊
+    Corps 		= 8;  	//军团
+    Team 		= 16;  	//组队
+    AllServer 	= 32;	//全服
+    System 		= 1024;	//系统
+}
+
+message CTS_IMESSAGE_SEND_MSG {
+	required ChatMessageType type 	= 1;	//频道类型
+	required string msg 			= 2;	//聊天协议
+	required string text			= 3;	//聊天内容
+	required uint32 key				= 4;	//消息key
+	optional uint32 receiverId		= 5;	//接收者roleId
+}
+
+message STC_IMESSAGE_SEND_MSG {
+	required bool success 			= 1;
+	optional string info 			= 2;
+	required uint32 key				= 3;	//消息key
+}
+
+message STC_IMESSAGE_MSG {
+	required string msg 			= 1;	//推送聊天消息
+	required ChatMessageType type 	= 2;	//频道类型
+}
+
+//系统通知消息
+message STC_SYSTEM_IMESSAGE_MSG {
+	required string msg 			= 1;	//推送聊天消息
+	required ChatMessageType type 	= 2;	//频道类型
+}
+
+
+//领取新手引导奖励返回
+message STC_DRAW_TEACH_REWARD_MSG {
+	required bool success 			= 1;
+	optional string info 			= 2;
+
+}
+
+message GoodsItem {
+	required uint32 id 	= 1;
+	required uint32 num = 2;
+}
+
+enum RewardState {
+	ACCEPT		= 1;
+	REWARD		= 2;
+	FINISH		= 3;
+}
+
+message VipItem {
+	required uint32 level					= 1;
+	required uint32 limit 					= 2;	//vip升级所需充值rmb
+	required RewardState state				= 3;	//是否可领取奖励
+	optional uint32 gold 					= 4;	//金币
+	optional uint32 iron 					= 5;	//银币
+	optional uint32 honor 					= 6;	//荣誉
+	optional uint32 roleTankExp 			= 7;	//全局坦克经验
+	repeated GoodsItem goodsList 			= 8;	//物品
+	required float privilegeRoleTankExp 	= 9;	//坦克全局经验
+	required float privilegeIron 			= 10;	//银币特权
+	required float privilegeIronMax 		= 11;	//银币上限特权
+	required float privilegeTankExp 		= 12;	//坦克经验特权
+	required uint32 privilegeAlive 			= 13;	//复活次数特权
+}
+
+message STC_VIP_LIST_MSG {
+	repeated VipItem vips 	= 1;
+	required uint32 rmb		= 2;	//累计充值rmb
+}
+
+message CTS_VIP_DRAW_MSG {
+	required uint32 level	= 1; //vip等级
+}
+message STC_VIP_DRAW_MSG {
+	required bool success = 1;
+	optional string info  = 2;
+}
+
+message STC_VIP_LEVEL_UP_MSG {
+	repeated uint32 drawLevels	= 1;
+	required uint32 rmb			= 2;	//累计充值rmb
+}
+
+//返回支付列表
+message STC_PAY_LIST_MSG {
+	required uint32 curVipLvl		= 1; //当前VIP等级
+	required uint32 nextVipLvl		= 2; //下一级VIP等级(为0表示达到最高vip等级)
+	required uint32 curPayRmb		= 3; //当前充值金额
+	required uint32 nextPayRmb		= 4; //下一级需要的充值金额(为0表示达到最高vip等级)
+	required string gameUrl			= 5; //回调地址
+	repeated PayItem items			= 7; //商品列表
+}
+
+//支付item
+message PayItem {
+	required uint32 id			= 1; //商品ID
+	required string name		= 2; //商品名称
+	required uint32 rmb			= 3; //充值金额人民币
+	required uint32 gold		= 4; //获得金币数
+	required string param		= 5; //透传参数
+	required string desc		= 6; //商品描述
+	required string icon		= 7; //图片
+	required bool first			= 8; //是否为首充
+}
+
+message CTS_GOLD_TO_IRON_MSG {
+	required uint32 gold 	= 1;	//要转换的金币
+}
+
+message STC_GOLD_TO_IRON_MSG {
+	required bool success 	= 1;
+	optional string info 	= 2;
+}
+
+
+//主推获得奖励信息
+message STC_REWARDS_INFO_MSG {
+	optional uint32 gold 			= 1;	//金币
+	optional uint32 iron 			= 2;	//银币
+	optional uint32 honor 			= 3;	//荣誉
+	optional uint32 roleTankExp 	= 4;	//全局坦克经验
+	optional uint32 tankId			= 5;	//坦克ID
+	repeated GoodsItem goodsList 	= 6;	//物品
+	optional uint32 diamonds		= 7; 	//钻石
+}
+
+message CTS_DIAMOND_TO_GOLD_MSG {
+	required uint32 diamonds	= 1;
+}
+
+message STC_DIAMOND_TO_GOLD_MSG {
+	required bool success 	= 1;
+	optional string info 	= 2;
+}
+
+//充值成功返回订单号
+message STC_PAY_SUCCESS_MSG {
+	required string orderId			= 1; // 订单 id
+	required string propName		= 2; // 商品名称
+	required uint32 cost			= 3; // 商品话费
+	required uint32 currencyNum		= 4; // 虚拟货币数量
+}
+
+
+//蓝钻信息
+message CTS_BLUE_MSG {
+  
+}
+
+//蓝钻信息
+message STC_BLUE_MSG {
+	optional uint32 isBlue						= 1; //1 是蓝钻 0不是蓝钻
+	repeated BLUE_INFO_MSG blueInfo     		= 2; //信息
+	optional uint32 blueLevel       			= 3; //蓝钻等级 
+	optional BLUE_EXPIRE_INFO_MSG expire        = 4; //过期时间
+	  
+}
+//蓝钻信息体
+message BLUE_INFO_MSG {
+	optional uint32 type						= 1; //1新手礼包 2 每日礼包  3豪华礼包 4 年费礼包 5等级礼包 
+	optional uint32 state						= 2; //0不可领取1可领取2已领取
+	repeated RoleRewardItem items 				= 3; //物品 
+	repeated BLUE_LEVEL_INFO_MSG levelInfo 		= 4; //蓝钻角色等级 礼包  对应等级礼包
+	repeated BLUE_LEVEL_INFO_MSG blueLevelInfo 	= 5; //蓝钻等级 礼包  	  对应每日礼包
+}
+
+
+
+//领取蓝钻礼包 
+message CTS_BLUE_GET_MSG {
+	optional uint32 type				=1 ; //1新手礼包 2 每日礼包  3豪华礼包 4 年费礼包 5等级礼包 
+	optional uint32 levelGiftId 		=2 ; //等级礼包ID
+	  
+}
+//领取蓝钻礼包返回
+message STC_BLUE_GET_MSG {
+	required bool success 	= 1;
+	optional string info 	= 2;
+	repeated RoleRewardItem items 		= 3; //物品 
+}
+
+//等级礼包蓝钻体
+message BLUE_LEVEL_INFO_MSG {
+	optional uint32 id 		    			= 1; //蓝钻等级 礼包ID
+	optional uint32 roleLevel				= 2; //配表里角色等级  |或者是蓝钻等级	
+	optional uint32 state    			    = 3; // 0不可领取1可领取2已领取 
+	repeated RoleRewardItem items 			= 4; //物品 
+}
+
+
+//QQ大厅信息请求
+message CTS_QQHall_MSG {
+	optional string isQQHall		= 1; //1是QQ大厅用户 0不是 
+}
+
+
+//QQ大厅信息返回
+message STC_QQHall_MSG {
+	repeated QQHall_INFO_MSG infos  = 1; //信息体  
+}
+
+//QQ大厅信息体
+message QQHall_INFO_MSG {
+	optional uint32 type						= 1; //1新手礼包 2 每日礼包 3等级礼包 
+	optional uint32 state						= 2; //0无1可领取2已领取
+	repeated RoleRewardItem items 				= 3; //物品 
+	repeated BLUE_LEVEL_INFO_MSG levelInfo 		= 4; //QQ角色等级 礼包
+}
+
+
+//领取QQ大厅礼包 
+message CTS_QQHall_GET_MSG {
+	optional uint32 type				=1 ; //1新手礼包 2 每日礼包  3等级礼包 
+	optional uint32 levelGiftId 		=2 ; //等级礼包ID
+	  
+}
+//领取QQ大厅礼包返回
+message STC_QQHall_GET_MSG {
+	required bool success 			= 1;
+	optional string info 			= 2;
+	repeated RoleRewardItem items 		= 3; //物品 
+}
+
+
+//蓝钻过期体
+message BLUE_EXPIRE_INFO_MSG {
+	optional uint32 type 		    = 1; //1普通蓝钻2年费蓝钻3豪华蓝钻
+	optional uint32 day       		= 2; //  -3 到 3   -3就是还有已经过期三天 3就是还有三天过期
+	repeated RoleRewardItem items 	= 3; //蓝钻续费礼包物品   
+	optional uint32 qqb				= 4; //礼包价值Q币
+	  
+}
+
+
+//获取nodeName和ioId
+message CTS_GET_GAMESERVER_INFO_MSG {
+	  
+}
+//获取nodeName和ioId 返回
+message STC_GET_GAMESERVER_INFO_MSG {
+	optional string nodeName		= 1; 
+	optional int32  ioId		  	= 2; 
+	optional string prepareUrl 		= 3;//访问平台的url
+} 
+
+//奖励内容
+message RoleRewardItem {
+	required uint32 id			= 1;	//id
+	required uint32 count		= 2;	//数量
+	required RoleRewardType type 	= 3; 	//类型
+}
+
+//奖励类型
+enum RoleRewardType {
+	TANK	= 1;	//坦克
+	MEMBER	= 2;	//船员
+	GOODS	= 3;	//物品
+	GOLD	= 4;	//金币
+	IRON	= 5;	//银币
+	HONOR	= 6;	//荣誉
+	EXP		= 7;	//经验 
+	TANKEXP	= 8; 	//全局经验 
+	DIAMONDS = 9;	//钻石
+}
+
+//请求蓝钻pfinfoString
+message CTS_GetPfinfoStr_MSG{
+
+}
+//请求蓝钻pfinfoString返回
+message STC_GetPfinfoStr_MSG{
+	required string info = 1;
+}
+
+
+
+
+
+//黄钻信息
+message CTS_YELLOW_MSG {
+  
+}
+
+//黄钻信息
+message STC_YELLOW_MSG {
+	optional uint32 isYellow						= 1; //1 是黄钻 0不是黄钻
+	repeated YELLOW_INFO_MSG yellowInfo     		= 2; //信息
+	optional uint32 yellowLevel       			= 3; //黄钻等级 
+	  
+}
+//蓝钻信息体
+message YELLOW_INFO_MSG {
+	optional uint32 type						= 1; //1新手礼包 2 每日礼包  3豪华礼包 4 年费礼包 5等级礼包 
+	optional uint32 state						= 2; //0不可领取1可领取2已领取
+	repeated RoleRewardItem items 				= 3; //物品 
+	repeated YELLOW_LEVEL_INFO_MSG levelInfo 		= 4; //黄钻角色等级 礼包  对应等级礼包
+	repeated YELLOW_LEVEL_INFO_MSG yellowLevelInfo 	= 5; //黄钻等级 礼包  	  对应每日礼包
+}
+
+
+
+//领取黄钻礼包 
+message CTS_YELLOW_GET_MSG {
+	optional uint32 type				=1 ; //1新手礼包 2 每日礼包  3豪华礼包 4 年费礼包 5等级礼包 
+	optional uint32 levelGiftId 		=2 ; //等级礼包ID
+	  
+}
+//领取黄钻礼包返回
+message STC_YELLOW_GET_MSG {
+	required bool success 	= 1;
+	optional string info 	= 2;
+	repeated RoleRewardItem items 		= 3; //物品 
+}
+
+//等级礼包黄钻体
+message YELLOW_LEVEL_INFO_MSG {
+	optional uint32 id 		    			= 1; //黄钻等级 礼包ID
+	optional uint32 roleLevel				= 2; //配表里角色等级  |或者是黄钻等级	
+	optional uint32 state    			    = 3; // 0不可领取1可领取2已领取 
+	repeated RoleRewardItem items 			= 4; //物品 
+}
+
+
+
+//请求黄钻pfinfoString
+message CTS_GetYellowPfinfoStr_MSG{
+
+}
+//请求黄钻pfinfoString返回
+message STC_GetYellowPfinfoStr_MSG{
+	required string info = 1;
+}
+
+message STC_SHOW_TIP_MSG{
+	required string info =1;//内容
+}
+
+
+//下线协议
+message CTS_OFFLINE_MSG{
+
+}
+
+
+
+//QQ空间信息请求
+message CTS_QQZone_MSG {
+	optional string isQQZone		= 1; //1是QQ空间用户 0不是 
+}
+
+
+//QQ空间信息返回
+message STC_QQZone_MSG {
+	repeated QQHall_INFO_MSG infos  = 1; //信息体  
+}
+
+
+//领取QQ空间礼包 
+message CTS_QQZone_GET_MSG {
+	optional uint32 type				=1 ; //1新手礼包 2 每日礼包  3等级礼包 
+	optional uint32 levelGiftId 		=2 ; //等级礼包ID
+	  
+}
+//领取QQ空间礼包返回
+message STC_QQZone_GET_MSG {
+	required bool success 			= 1;
+	optional string info 			= 2;
+	repeated RoleRewardItem items 		= 3; //物品 
+}
+
+
+
+

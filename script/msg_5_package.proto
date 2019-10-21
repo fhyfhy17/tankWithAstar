@@ -1,0 +1,158 @@
+/********************************************************************
+*
+*	filename: 	msg_5_package.proto
+*	purpose:	仓库功能
+*
+* 2015-12-16
+* 1. 添加 CTS_GOODS_WAR_LIST CTS_GOODS_WAR_CHANGE CTS_GOODS_WAR_CLEAR 客户端服务器协议
+*
+* 2015-12-18
+* 1. 修改CTS_GOODS_WAR_CLEAR
+*********************************************************************/
+
+
+
+package PROTO_PACKAGE;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "PACKAGE_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_PACKAGE = 5;
+}
+
+
+enum CMD_ID {
+	CTS_GOODS_LIST   	 	= 1;	//物品列表
+	CTS_GOODS_USE    	 	= 2;	//开启宝箱
+	CTS_GOODS_SELL		 	= 3;	//出售物品
+	CTS_MATERIAL_COMPOSITE  = 4;	//配件材料合成
+	CTS_MATERIAL_DECOMPOSE  = 5;	//配件材料分解
+	
+	STC_GOODS_LIST   	 	= 20;	//物品列表
+	STC_GOODS_CHANGE 	 	= 21;   //物品变化
+	STC_GOODS_BOX_RESULT 	= 22;   //宝箱结果
+	STC_GOODS_SELL_RESULT	= 23;	//出售结果
+	STC_MATERIAL_COMPOSITE  = 24;	//配件材料合成
+	STC_MATERIAL_DECOMPOSE  = 25;	//配件材料分解
+	
+	CTS_QUICK_BUY			= 26;	//请求快速购买
+	STC_QUICK_BUY			= 27; 	//快速购买
+	
+	CTS_GOODS_INFO			= 28;	//获取改变的物品信息(空命令)
+	STC_GOODS_INFO			= 29;	//返回改变的物品信息
+}
+
+
+enum GOODS_TYPE {
+	material 		= 1;	//材料
+	broadcast 		= 2;	//喇叭
+	box 			= 3;	//宝箱
+	battle_bullet 	= 4; 	//战场炮弹
+	battle_item 	= 5; 	//战场道具
+	rename			= 6;	//改名卡
+	vip_time		= 7;	//vip时间卡
+	small_shell		= 8;	//轻坦炮弹
+	middle_shell	= 9;	//中坦炮弹
+	heavy_shell		= 10;	//重坦炮弹
+	back_shell		= 11;   //反坦炮弹
+	member_part		= 12;   //成员碎片
+	part_material	= 13;   //配件材料
+	corps_gold		= 14;	//军团币
+	medal			= 15;   //勋章
+}
+
+
+//开启宝箱
+message CTS_GOODS_USE_MSG {
+	required uint32 goodsId = 1;	//物品ID
+	required uint32 count	= 2;	//数量
+}
+
+//出售物品
+message CTS_GOODS_SELL_MSG {
+	required uint32 goodsId = 1;	//物品数量
+	required uint32 count 	= 2;	//物品ID
+}
+
+//配件材料合成
+message CTS_MATERIAL_COMPOSITE_MSG {
+	required uint32 goodsId = 1; //要合成的材料ID
+	required uint32 num		= 2; //合成数量
+}
+
+//配件材料分解
+message CTS_MATERIAL_DECOMPOSE_MSG {
+	required uint32 goodsId = 1; //要分解的材料ID
+	required uint32 num		= 2; //分解数量
+}
+	
+
+message GoodsItem {
+	required uint32 id 	  = 1;
+	required uint32 count = 2;
+}
+
+//物品列表
+message STC_GOODS_LIST_MSG {
+	repeated GoodsItem goodsList = 1;
+}
+
+//物品变化
+message STC_GOODS_CHANGE_MSG {
+	required string source  = 1;  		//物品来源
+	repeated GoodsItem changeItem = 2;	//变化后的最终数量
+}
+
+//宝箱结果
+message STC_GOODS_BOX_RESULT_MSG {
+	required uint32 gold = 1;	//金币
+	required uint32 iron = 2;
+	required uint32 honor = 3;	//荣誉
+	repeated GoodsItem changeItem = 4;	//宝箱物品
+}
+
+//出售结果
+message STC_GOODS_SELL_RESULT_MSG {
+	required bool success = 1;	//是否成功出售
+	required string info  = 2;  //提示信息
+}
+
+//配件材料合成
+message STC_MATERIAL_COMPOSITE_MSG {
+	required bool success = 1;	//是否成功出售
+	required string info  = 2;  //提示信息
+	required uint32 goodsId = 3; //所合成的材料id
+}
+
+//配件材料分解
+message STC_MATERIAL_DECOMPOSE_MSG {
+	required bool success = 1;	//是否成功出售
+	required string info  = 2;  //提示信息
+	required uint32 goodsId = 3; //所分解的材料id
+	required uint32 num		= 4; //分解数量
+}
+
+//战场快速购买
+message CTS_QUICK_BUY_MSG {
+	required uint32 goodsId		= 1;	//物品Id
+	required uint32 goodsNum	= 2;	//购买数量
+}
+message STC_QUICK_BUY_MSG {
+	required uint32 goodsId		= 1;	//物品id
+	required uint32 num 		= 2; 	//数量
+}
+
+
+//物品信息
+message STC_GOODS_INFO_MSG {
+	repeated GoodsInfoItem items	= 1; //物品描述
+}
+
+message GoodsInfoItem {
+	required uint32 goodsId		= 1; //物品ID
+	required string name		= 2; //物品名称
+	required string desc		= 3; //物品描述
+}

@@ -1,0 +1,117 @@
+/********************************************************************
+*	filename: 	msg_15_mail.proto
+*	purpose:	邮件
+*
+*********************************************************************/
+
+package PROTO_MAIL;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "MAIL_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_MAIL = 15;
+}
+
+enum CMD_ID {
+	CTS_MAIL_LIST			= 1; //邮件列表
+	STC_MAIL_LIST			= 2; //邮件列表成功
+	
+	CTS_MAIL_READ			= 3;//读取邮件，标记邮件为已读
+	
+	CTS_MAIL_DELETE			= 4;//删除邮件
+	STC_MAIL_DELETE			= 5;//删除邮件成功
+	
+	CTS_MAIL_DELETEALL		= 6;//删除全部
+	STC_MAIL_DELETEALL		= 7;//删除全部邮件成功
+	
+	CTS_MAIL_GETATTACH		= 8;//领取附件
+	STC_MAIL_GETATTACH		= 9;//领取附件成功
+	
+	CTS_MAIL_GETALLATTACH	= 10;//领取全部附件
+	STC_MAIL_GETALLATTACH	= 11;//领取全部附件成功
+}
+
+
+message STC_MAIL_LIST_MSG{
+	required bool haveAttach = 1;
+	required bool haveDelete = 2;
+	repeated MailContent mails = 3;
+}
+
+message MailContent{
+	required string id 					= 1;	//邮件id
+	required string title 				= 2;	//邮件标题
+	required string content				= 3;	//邮件内容
+	required string creattime 			= 4;	//创建时间
+	required uint32 deletetime 			= 5;	//剩余删除时间s
+	required bool isread 				= 6;	//是否已读
+	required uint32 gold 				= 7;	//附件中金币数量
+	required uint32 iron 				= 8;	//附件中钢铁资源数量
+	required uint32 exp 				= 9;	//得到经验
+	required uint32 honor 				= 10;	//得到荣誉
+	repeated MailGoodsItem goodsItem 	= 11;	//附件列表
+	required bool getattach 			= 12;	//附件是否已全部领取
+	required uint32 tankExp 			= 13; 	//全局经验
+	required uint32 diamond				= 14;	//钻石
+	
+}
+
+message MailGoodsItem{
+	required uint32 goodsId = 1;
+	required uint32 num = 2;
+}
+
+
+message CTS_MAIL_READ_MSG{
+	required string mailId = 1;//邮件id
+}
+
+message CTS_MAIL_DELETE_MSG{
+	required string mailId = 1;//邮件id
+}
+
+message STC_MAIL_DELETE_MSG{
+	required string mailId  = 1;
+	required bool success 	= 2; 	//是否成功
+	optional string info 	= 3;	//提示
+}
+
+message CTS_MAIL_GETATTACH_MSG{
+	required string mailId = 1;//邮件id
+}
+message STC_MAIL_GETATTACH_MSG{
+	required uint32 success = 1; //是否成功
+	required string error 	= 2; //错误消息
+	required uint32 gold 	= 3; //得到金币数量
+	required uint32 iron 	= 4; //得到钢铁数量
+	required uint32 exp 	= 5; //得到经验
+	required uint32 honor	= 6; //荣誉
+	required uint32 tankExp	= 7;	//全局经验
+	required uint32 diamond = 8;	//钻石
+	repeated AwardItem awards = 9;//得到物品奖励
+}
+
+message STC_MAIL_GETALLATTACH_MSG{
+	required uint32 success = 1;
+	required string error 	= 2;
+	required uint32 gold 	= 3;	//得到金币数量
+	required uint32 iron 	= 4;	//得到钢铁数量
+	required uint32 exp 	= 5;	//得到经验
+	required uint32 honor	= 6; 	//荣誉
+	required uint32 tankExp	= 7;	//全局经验
+	required uint32 diamond = 8;	//钻石
+	repeated AwardItem awards = 9;//得到物品奖励
+}
+
+
+//奖励
+message AwardItem{
+	required uint32 goodsId = 1;//物品id
+	required uint32 count = 2;//物品数量
+}
+
+
+

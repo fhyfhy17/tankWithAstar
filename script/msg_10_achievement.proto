@@ -1,0 +1,63 @@
+/********************************************************************
+*
+*	filename: 	msg_10_achievement.proto
+*	purpose:	成就
+*
+*********************************************************************/
+
+package PROTO_ACHIEVEMENT;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "ACHIEVEMENT_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_ACHIEVEMENT = 10;
+}
+
+enum CMD_ID {
+	CTS_ACHIEVEMENT_LIST = 1;	//成就列表
+	CTS_ACHIEVEMENT_DRAW = 2;	//领取奖励
+	
+	STC_ACHIEVEMENT_LIST = 3;
+	STC_ACHIEVEMENT_DRAW = 4;
+	
+	STC_TRIGGER_TIP		 = 5;	//成就触发提示
+}
+
+enum AchievementState{
+	reward 		= 1; //可以领奖
+	complete 	= 2; //领完奖励
+	accept 		= 3; //进行中
+}
+
+
+//领取奖励
+message CTS_ACHIEVEMENT_DRAW_MSG{
+	required uint32 id = 1; //成就ID
+}
+
+
+message AchievementItem {
+	required uint32 id 				= 1; //成就ID
+	required uint32 finishCount 	= 2; //完成次数
+	required AchievementState state	= 3; //是否领取了奖励
+}
+
+//成就列表
+message STC_ACHIEVEMENT_LIST_MSG {
+	repeated AchievementItem item = 1; //成就列表
+}
+
+//领取奖励
+message STC_ACHIEVEMENT_DRAW_MSG {
+	required bool success = 1; //是否成功
+	required string info  = 2; //提示信息
+	required uint32 id 	  = 3; //成就ID
+}
+
+message STC_TRIGGER_TIP_MSG {
+	required uint32 id			= 1;	//成就id
+	required uint32 finishCount = 2;	//完成次数
+}

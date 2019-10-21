@@ -1,0 +1,143 @@
+/********************************************************************
+*	filename: 	msg_16_activity.proto
+*	purpose:	活动
+*
+*********************************************************************/
+package PROTO_RANK;
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "RANK_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_RANK = 17;
+}
+
+enum CMD_ID {
+	CTS_SEASON_RANK_LIST	= 1;	//赛季排行（空消息）
+	STC_SEASON_RANK_LIST	= 2;	
+	CTS_RANK_INFO			= 3;	//查看排行榜
+	STC_RANK_INFO			= 4;	//查看排行榜返回
+	CTS_RANK_GET			= 5;	//排行榜领奖
+	STC_RANK_GET			= 6;    //排行榜领奖返回
+	CTS_RANK_SEARCH			= 7;	//搜索玩家
+	STC_RANK_SEARCH			= 8;    //搜索玩家返回
+	CTS_RANK_SELF			= 9;    //个人信息 空
+	STC_RANK_SELF			= 10;	//个人信息 返回
+	CTS_RANK_REWARD_INFOS	= 11;	//奖励信息
+	STC_RANK_REWARD_INFOS	= 12;   //奖励信息返回
+}
+
+
+message SeasonRankItem {
+	required uint32 titleId		= 1;	//军衔id
+	required string name		= 2;	//玩家名称
+	required uint32 vip 		= 3;	//vip等级
+	required uint32 score		= 4;	//积分
+	required uint32 tankId		= 5;	//主战坦克id
+	required int32 rank 		= 6;	//名次	（-1:未上榜）
+	required string pfUserInfo	= 7; 	//蓝钻信息
+	optional string pfYellowUserInfo = 8; //平台黄钻信息
+}
+
+message STC_SEASON_RANK_LIST_MSG {
+	repeated SeasonRankItem ranks 		= 1;	//排行榜列表
+	required SeasonRankItem roleRank	= 2;	//自己排名
+}
+
+//排名、军衔、名字、积分及军团
+
+message RankItem {
+	optional int32 rank			 =1;//名次	（-1:未上榜）
+	optional string name 		 =2;//名字
+	optional int32 titleId		 =3;//军衔
+	optional int32 score 		 =4;//分
+	optional string corp		 =5;//军团名字
+	optional string pfUserInfo	 =6;//蓝钻信息
+	optional int32 vip 			 =7;//vip等级
+	optional string pfYellowUserInfo = 8; //平台黄钻信息
+	optional int32 roleId		 = 9; //roleId	
+}
+
+message CTS_RANK_INFO_MSG{
+	required int32 type 		=1;//榜单类型0军衔 1击杀 2助攻 3胜场 4 战力
+	required int32 page	   		=2;//页数 从1开始
+}
+
+message STC_RANK_INFO_MSG{
+	repeated RankItem ranks 	=1;	//排行榜列表
+//	required RankItem roleRank	=2;	//自己排名
+	optional string canReward	=3; //0不可领奖 1可领奖 2已领奖
+}
+//排行榜领奖
+message CTS_RANK_GET_MSG{
+	required int32 type 		=1;//榜单类型 1击杀 2助攻 3胜场 4 战力
+}
+//排行榜领奖返回
+message STC_RANK_GET_MSG{
+	required bool success 			= 1;
+	optional string info 			= 2;
+	repeated RoleRewardItem item	= 3;
+}
+//搜索玩家
+message CTS_RANK_SEARCH_MSG{
+	required int32 type 		=1;//榜单类型 0军衔 1击杀 2助攻 3胜场 4 战力
+	optional string name 		=2;//名字
+}
+
+//搜索玩家返回
+message STC_RANK_SEARCH_MSG{
+	repeated RankItem ranks 	=1;	//排行榜列表
+	optional int32 rank			=2; //被搜索人排名
+	optional string isFinded	=3; //1 找到了 0 未找到
+}
+
+//奖励内容
+message RoleRewardItem {
+	required uint32 id			= 1;	//id
+	required uint32 count		= 2;	//数量
+	required RoleRewardType type 	= 3; 	//类型
+}
+
+//奖励类型
+enum RoleRewardType {
+	TANK	= 1;	//坦克
+	MEMBER	= 2;	//船员
+	GOODS	= 3;	//物品
+	GOLD	= 4;	//金币
+	IRON	= 5;	//银币
+	HONOR	= 6;	//荣誉
+	EXP		= 7;	//经验 
+	TANKEXP	= 8; 	//全局经验 
+	DIAMONDS = 9;	//钻石
+}
+//排行榜个人信息体
+message RANK_SELF_INFO{
+	optional int32 type=1;//榜单类型 0军衔 1击杀 2助攻 3胜场 4 战力
+	optional int32 rank=2;//排名   -1为未上榜
+	optional int32 score=3;//分
+}
+
+//排行榜个人信息
+message CTS_RANK_SELF_MSG{
+	
+}
+//排行榜个人信息返回
+message STC_RANK_SELF_MSG{
+	repeated RANK_SELF_INFO info=1;
+}
+//奖励信息INFO
+message RANK_REWARD_INFO{
+	optional RoleRewardType type=1;
+	optional int32 itemId=2;//物品ID ，如果有的话
+	optional int32 num=3;
+	optional string rank=4;//格式是字符串，用逗号拆分，没逗号的是单独一个  例   1  100,200
+}
+//奖励信息
+message CTS_RANK_REWARD_INFOS_MSG{
+	optional int32 type=1;//榜单类型 1击杀 2助攻 3胜场 4 战力
+}
+//奖励信息返回
+message STC_RANK_REWARD_INFOS_MSG{
+	repeated RANK_REWARD_INFO info=1;
+}

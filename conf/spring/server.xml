@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="serverHolder" class="com.ourpalm.core.service.ServerHolder">
+		<property name="initServiceMap">
+			<map>
+						
+				<entry key="matchApp" value-ref="matchApp"/>
+				<entry key="mutilDfaApp" value-ref="mutilDfaApp"/>
+				<entry key="onlineCenter" value-ref="onlineCenter"/>
+				<entry key="skillApp" value-ref="skillApp"/>
+				<entry key="tankApp" value-ref="tankApp" />
+				<entry key="goodsApp" value-ref="goodsApp" />
+				<entry key="mapApp" value-ref="mapApp"/>
+				<entry key="masterQuestApp" value-ref="masterQuestApp"/>
+				<entry key="userApp" value-ref="userApp"/>
+				<entry key="shopApp" value-ref="shopApp" />
+				<entry key="seasonRankApp" value-ref="seasonRankApp"/>
+				<entry key="roleArmyTitleApp" value-ref="roleArmyTitleApp" />
+				<entry key="questApp" value-ref="questApp" />
+				<entry key="achievementApp" value-ref="achievementApp" />
+				<entry key="buffApp" value-ref="buffApp"/>
+				<entry key="memberApp" value-ref="memberApp" />
+				<entry key="medalApp" value-ref="medalApp" />
+				<entry key="memberAttrEvaluate" value-ref="memberAttrEvaluate"/>
+				<entry key="corpsApp" value-ref="corpsApp"/>
+				<entry key="friendApp" value-ref="friendApp"/>
+				<entry key="activityApp" value-ref="activityApp"/>
+				<entry key="schedulerApp" value-ref="schedulerApp"/>
+				<entry key="mailApp" value-ref="mailApp"/>
+				<entry key="honorShopApp" value-ref="honorShopApp"/>
+				<entry key="vipShopApp" value-ref="vipShopApp"/>
+				<entry key="vipApp" value-ref="vipApp"/>
+				<entry key="payApp" value-ref="payApp"/>
+				<entry key="gameLogApp" value-ref="gameLogApp"/>
+				<entry key="gameDBLogApp" value-ref="gameDBLogApp"/>
+				<entry key="blueApp" value-ref="blueApp"/>
+				<entry key="qqHallApp" value-ref="qqHallApp"/>
+				<entry key="qqZoneApp" value-ref="qqZoneApp"/>
+				<entry key="luckyWheelApp" value-ref="luckyWheelApp"/>
+				<entry key="rankApp" value-ref="rankApp"/>
+				<entry key="yellowApp" value-ref="yellowApp"/>
+				<entry key="redMoneyApp" value-ref="redMoneyApp"/>
+				<entry key="memberNewApp" value-ref="memberNewApp"/>
+			</map>
+		</property>
+		<property name="serverMap">
+			<map>
+				<entry key="localNode" value-ref="localNode"/>
+			</map>
+		</property>
+		<property name="startedServiceMap">
+			<map>
+				<entry key="gatewayManagerApp" value-ref="gatewayManagerApp"/>
+				<entry key="matchManagerApp" value-ref="matchManagerApp"/>
+				<entry key="platformManagerApp" value-ref="platformManagerApp"/>
+				<entry key="gmManagerApp" value-ref="gmManagerApp"/>
+			</map>
+		</property>
+	</bean>
+	
+</beans>

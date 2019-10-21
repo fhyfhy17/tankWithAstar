@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="localNode" class="com.ourpalm.core.node.Node">
+		<property name="zkClient" ref="zkclient"/>
+		<property name="registerServerNodesName" value="${game.server.register.node}"/>
+		<property name="port" value="${socket.proxy.port}"/>
+		<property name="messageHandler" ref="messageHandler"/>
+	</bean>
+	
+	
+	<bean id="messageHandler" class="com.ourpalm.core.message.handler.NodeMessageHandler" >
+		<property name="actionFactory" ref="actionFactory"/>
+		<property name="msgParser" ref="msgParser"/>
+		<property name="remoteManagerApp" ref="gatewayManagerApp"/>
+		<property name="cmds">
+			<value>4_1,4_3,4_4,4_5,4_10,4_30</value>
+		</property>
+		<property name="handlerCount" value="${msg.server.handlerCount}"/>
+		<property name="defaultHandlerCount" value="${msg.server.defaultHandlerCount}"/>
+	</bean>
+	
+	
+	<bean id="actionFactory" class="com.ourpalm.core.action.AutoLoadActionFactory" init-method="init">
+		<property name="pkgPathList">
+			<list>
+				<value>com.ourpalm.tank.action</value>
+				<value>com.ourpalm.tank.action.inside</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<bean id="msgParser" class="com.ourpalm.tank.message.MessageParserImpl"/>
+	
+	
+</beans>

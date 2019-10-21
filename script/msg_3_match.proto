@@ -1,0 +1,468 @@
+/********************************************************************
+*	filename: 	BATTLE_MSG.proto
+*	purpose:	匹配相关信息
+*
+*********************************************************************/
+
+package PROTO_MATCH;
+
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "MATCH_MSG";
+
+
+enum CMD_TYPE {
+    CMD_TYPE_MATCH = 3;
+};
+
+enum CMD_ID {
+    CTS_MATCH    	        		= 1;  //请求战斗匹配
+    CTS_ENTER						= 2;  //请求进入战场(无结构体)
+    CTS_READY						= 3;  //准备完毕(无结构体)
+    
+    STC_MATCH						= 4;  //返回战斗匹配(STC_MATCH_MSG)
+    STC_NOTIFY_ENTER				= 5;  //通知进入战场(STC_NOTIFY_ENTER_MSG)
+    STC_ENTER						= 6;  //进入战场返回(STC_ENTER_MSG)
+    STC_READY						= 7;  //准备返回(无结构体)
+    STC_BEGIN						= 8;  //比赛开始(STC_BEGIN_MSG)
+    
+    CTS_ENTER_CAMPAIGN				= 9; //请求进入战役
+    STC_ENTER_CAMPAIGN				= 10; //进入战役返回
+    
+    STC_TANK_BIRTH					= 11;  //坦克出生
+	
+	CTS_ENTER_TEACH					= 12; //请求进入教学战场(无结构体)
+	STC_ENTER_TEACH					= 13; //返回进入教学战场
+	
+	CTS_MATCH_CANCEL				= 14; //请求取消匹配（无结构体）
+	STC_MATCH_CANCEL				= 15; //返回取消（无结构体）
+		
+	CTS_BACK_WAR					= 16; //请求回到战场(空命令)(可以进入返回STC_MATCH, 不可则无返回)
+	STC_BACK_WAR					= 17; //收到此命令客户端返回大厅(空命令)
+	
+	STC_PLAYER_READY				= 18; //主推已做好准备的玩家
+	
+	CTS_TEAM_CREATE					= 19; //创建队伍
+	STC_TEAM_INFO					= 20; //主推队伍信息
+	
+	CTS_TEAM_REQ					= 21; //组队邀请
+	STC_TEAM_REQ					= 22; //主推给被邀请者
+	
+	CTS_TEAM_AGREE					= 23; //同意邀请组队(给双方返回队伍信息 STC_TEAM_INFO_MSG)
+	
+	CTS_TEAM_REFUSE					= 24; //拒绝邀请组队
+	STC_TEAM_REFUSE					= 25; //拒绝邀请组队主推给邀请者
+	
+	CTS_TEAM_CHANGE_TANK			= 26; //组队更换所使用的坦克
+	STC_TEAM_CHANGE_TANK			= 27; //返回队员所使用的坦克
+	
+	CTS_TEAM_READY					= 28; //组队完成准备(返回:STC_TEAM_CHANGE_TANK)
+	
+	CTS_TEAM_MATCH					= 29; //组队匹配申请
+	STC_TEAM_MATCH					= 30; //返回组队匹配结果(主推所有队员)
+	
+	CTS_TEAM_QUIT					= 31; //退出组队(给其他人推送 STC_TEAM_INFO)
+	
+	CTS_TEAM_GOAWAY					= 32; //踢人(给其他人推送 STC_TEAM_INFO)
+	STC_TEAM_GOAWAY					= 33; //给被踢者主推(空命令)
+	
+	CTS_TEAM_INFO					= 34; //请求队伍信息
+	
+	CTS_TEAM_CANCEL					= 35; //取消匹配
+	STC_TEAM_CANCEL					= 36; //返回取消匹配(取消匹配)
+	
+	CTS_MATCH_FRI					= 37; //请求匹配下的好友列表状态(空命令)
+	STC_MATCH_FRI					= 38; //返回匹配下的好友列表状态
+	
+	CTS_MATCH_COUNT					= 39; //请求当前匹配人数
+	STC_MATCH_COUNT					= 40; //返回当前匹配人数
+	
+	CTS_MATCH_CORPS_FRI				= 41; //匹配队伍下的军团成员列表(空命令)
+	STC_MATCH_CORPS_FRI				= 42; //返回匹配队伍下的军团成员列表
+	STC_TEAM_INCOME_ADD_NUM			= 43; //组队、军团收益加成的百分比
+	
+	CTS_MATCH_SCHEDULE              = 44; //准备进度
+	STC_MATCH_SCHEDULE				= 45; //准备进度返回
+	
+	STC_ONLY_QUIT_TEAM				= 46;//只是退出 ，为了清除客户端队伍信息，临时方案
+	
+};
+
+message CTS_TEAM_INFO_MSG{
+	required TEAM_INFO_TYPE type =1;//类型
+}
+//战场类型
+enum WAR_TYPE {
+	RANK 		= 1;	//排行赛
+	BATTLE		= 2;	//对战赛
+	PERISH		= 3;	//歼灭赛
+}
+
+
+
+//返回进入教学战场
+message STC_ENTER_TEACH_MSG {
+	required string   mapId			= 1; //地图ID
+	required TankItem tankItem		= 2; //坦克实例
+	repeated TankItem otherTanks	= 3; //其他坦克 
+	required Location mines			= 4; //地雷位置
+	required uint32   time			= 5; //比赛时长(单位：秒)
+	required uint32   holdTime		= 7; //战旗时长(单位：秒)
+}
+
+
+//请求匹配
+message CTS_MATCH_MSG {
+	required uint32 tankId			= 1; //出战坦克模版id
+	required WAR_TYPE warType		= 2; //战场类型
+}
+
+
+// 服务器返回匹配结果
+message STC_MATCH_MSG {
+	required bool result			= 1; //匹配结果
+	required string info			= 2; //提示信息
+};
+
+
+
+// 服务器通知客户端进入战场
+message STC_NOTIFY_ENTER_MSG {
+	required string roomId			= 1; //房间ID
+	required string mapId			= 2; //地图ID
+	required TEAM self				= 3; //自己所属队伍
+	repeated MatchItem matchList	= 4; //匹配列表
+	required string mapName			= 5; //地图中文名字
+	required float smallMapOffX		= 6; //小地图偏移量X
+	required float smallMapOffY		= 7; //小地图偏移量Y
+	required float smallMapWidth	= 8; //小地图偏移量宽
+	required float smallMapHeigh	= 9; //小地图偏移量高
+	required WAR_TYPE warType		= 10; //战场类型
+	required uint32 weather			= 11; //天气 1:晴天 2:沙尘暴 3:雷阵雨 4:雪
+	optional bool weakTeam			= 12; //是否遭遇强敌
+};
+
+
+enum TEAM {
+ 	RED		= 1; //红方
+ 	BLUE 	= 2; //蓝方
+ };
+
+message MatchItem {
+	required string roleName		= 1; //玩家名称
+	required uint32 tankId			= 2; //坦克模板ID
+	required TEAM teamType			= 3; //团队阵营
+	required uint32 roleId			= 4; //
+	required uint32 attack			= 5; //战斗力
+	required uint32 titleId			= 6; //军衔
+	required bool   hadElite		= 7; 	//是否是精英
+	optional string pfUserInfo		= 8; //蓝钻信息
+	optional string pfYellowUserInfo = 9; //黄钻信息
+	optional int32 tankInstanceId    =10 ;//坦克实例ID
+	repeated string goodBad			= 11;//敌坦特点
+	
+};
+
+
+// 服务器进入战场返回
+message STC_ENTER_MSG {
+	required uint32 result			= 1; // 1：进入成功，0：进入失败提示
+	optional string info			= 2; //错误提示信息
+	optional TankItem tankItem		= 3; //坦克实例
+	repeated TankItem otherTanks	= 4; //其他坦克 
+	repeated GoodsItem goodsItem	= 5; //道具列表
+	repeated uint32	skillIds		= 6; //技能id列表
+	required uint32 loopTime		= 7; //AI位置同步间隔时间(单位：毫秒)
+};
+
+message GoodsItem {
+	required uint32 id		= 1; //物品ID
+	required uint32 count 	= 2; //物品数目
+};
+
+
+//属性
+message PropItem {
+	required uint32 id		= 1; //属性ID
+	required float value	= 2; //属性值
+};
+
+enum AiType{
+	free		= 0; //自由
+	intercept	= 1; //拦截
+	patrol		= 2; //巡逻
+	follow		= 3; //跟随
+	stop		= 4; //静止
+}
+
+
+message AiItem {
+	required AiType aiType				= 1; //AI类型
+	required string aiStr				= 2; //AI参数
+	required uint32 aiInt				= 3; //AI参数
+}
+
+
+message TankItem {
+	required uint32 id					= 1; //坦克实例ID
+	required uint32 tankId				= 2; //坦克模块ID
+	optional uint32 main				= 3; //是否为AI主机(0:不是 1:是) 2015-11-26
+	required uint32 robot				= 4; //是否为机器人(0:不是 1:是) 2015-11-26
+	required bool elite					= 5; //是否为精英坦克
+	required string roleName			= 6; //角色名称
+	required Location birthLocation		= 7; //出生位置
+	required TEAM teamType				= 8; //团队类型
+	repeated PropItem propes			= 9; //坦克属性
+	required AiItem aiItem				= 10; //AI
+	required uint32 atk					= 11; //坦克攻击力
+	optional string pfUserInfo			= 12; //蓝钻信息	
+	optional string pfYellowUserInfo 	= 13; //黄钻信息
+};
+
+//位置
+message Location {
+	required float dir	= 1;		//出生角度
+	required float x	= 2;
+	required float y	= 3;
+	required float z	= 4;
+};
+
+
+//比赛开始
+message STC_BEGIN_MSG {
+	required uint32 readyTime	= 1; //准备倒计时(单位:秒)
+	required uint32 overTime	= 2; //比赛时长(单位:秒)
+};
+
+
+//请求进入战役
+message CTS_ENTER_CAMPAIGN_MSG {
+	required uint32 id			= 1; //战役id
+}
+
+
+//进入战役返回
+message STC_ENTER_CAMPAIGN_MSG {
+	required uint32 result			= 1; // 1：进入成功，0：进入失败提示
+	optional string info			= 2; //错误提示信息
+	optional string mapId			= 3; //地图id
+	optional TankItem tankItem		= 4; //坦克实例
+	repeated TankItem otherTanks	= 5; //其他坦克 
+	repeated BuildItem buildItem	= 6; //建筑列表
+	repeated GoodsItem goodsItem	= 7; //道具列表
+	repeated uint32	skillIds		= 8; //技能id列表
+}
+
+
+//建筑
+message BuildItem {
+	required uint32 id					= 1; //建筑实例ID
+	required uint32 buildId				= 2; //建筑模块ID
+	required uint32 robot				= 3; //是否为机器人(0:不是 1:是) 2015-11-26
+	required string name				= 4; //角色名称
+	required Location birthLocation		= 5; //出生位置
+	required TEAM teamType				= 6; //团队类型
+	repeated PropItem propes			= 7; //坦克属性
+	required AiItem aiItem				= 8; //AI
+}
+
+
+//坦克出生协议
+message STC_TANK_BIRTH_MSG {
+	required TankItem tankItem		= 1; //坦克实例
+}
+
+//主推已做好准备的玩家
+message STC_PLAYER_READY_MSG {
+	required uint32 id	= 1; //坦克实例ID
+}
+
+
+//创建新的队伍
+message CTS_TEAM_CREATE_MSG {
+	required WAR_TYPE warType		= 1;	//战场类型
+}
+enum TEAM_INFO_TYPE{
+	TEAM_AGREE_TYPE 	=1;//同意邀请组队
+	TEAM_QUIT_TYPE  	=2;//退出组队(给其他人推送 STC_TEAM_INFO)		
+	TEAM_CREATE_TYPE 	=3;//创建队伍
+	TEAM_CANCEL_TYPE	=4;//取消匹配
+	TEAM_INFO_GET_TYPE		=5;//请求队伍信息
+	TEAM_INFO_GET_ONLY_TYPE =6;//请求队伍信息ONLY
+}
+
+//组队队伍信息
+message STC_TEAM_INFO_MSG {
+	required string teamId			= 1; //队伍ID	
+	required WAR_TYPE warType		= 2; //战场类型
+	repeated FriendItem friends		= 3; //好友列表
+	repeated FriendItem corpsRoles	= 4; //军团成员列表
+	repeated TankTeamItem tanks		= 5; //坦克列表
+	required uint32 limitMin		= 6; //限制最小军衔id
+	required uint32 limitMax		= 7; //限制最高军衔id
+	required string limitDesc		= 8; //限制说明
+	required TEAM_INFO_TYPE type	= 9; //推送的类型
+}
+
+//好友列表
+message FriendItem {
+	required uint32 roleId			= 1;	//好友角色ID
+	required string name			= 2;	//好友名称
+	required uint32 level			= 3;	//好友等级
+	required uint32 titleId			= 4;	//军衔ID
+	required uint32 battleScore		= 5;	//战斗力
+	required uint32 state			= 6;	// 1:在线  2:组队中 3:战斗中 4:离线
+	required uint32 vipLvl			= 7;	//vip等级
+	optional string pfUserInfo		= 8;	//蓝钻信息	
+	optional string pfYellowUserInfo = 9; 	//黄钻信息
+}
+
+//组队坦克列表
+message TankTeamItem {
+	required uint32 roleId			= 1;	//角色ID
+	required uint32 tankId			= 2;	//坦克ID
+	required string name			= 3;	//玩家名称
+	required uint32 battleScore		= 4;	//战斗力
+	required bool hadElite			= 5;	//是否为精英
+	required bool hadReady			= 6;	//是否已准备
+	required bool hadLeader			= 7;	//是否为队长	
+	required bool hadMatch			= 8;	//是否在匹配中	
+	optional string pfUserInfo		= 9;	//蓝钻信息	
+	optional string pfYellowUserInfo = 10; 	//黄钻信息	
+}
+//邀请类型
+enum TEAM_REQ_FRIEND{
+	FRIEND_TYPE 	=1;//好友邀请
+	CORP_TYPE   	=2;//军团邀请
+}
+//组队邀请请求
+message CTS_TEAM_REQ_MSG {
+	required string teamId			= 1; //队伍ID	
+	required uint32 friendRoleId	= 2; //被邀请好友角色ID
+	required WAR_TYPE warType		= 3; //战场类型
+	optional TEAM_REQ_FRIEND teamReqFriend =4;//邀请类型
+}
+
+//主推给被邀请者
+message STC_TEAM_REQ_MSG {
+	required string teamId			= 1; //队伍ID	
+	required uint32 reqRoleId		= 2; //邀请者角色ID
+	required string reqName			= 3; //邀请者角色名称
+	required WAR_TYPE warType		= 4; //战场类型
+	optional TEAM_REQ_FRIEND teamReqFriend =5;//邀请类型
+}
+
+
+//同意邀请组队(给双方返回队伍信息 STC_TEAM_INFO_MSG)
+message CTS_TEAM_AGREE_MSG {
+	required string teamId			= 1; //队伍ID
+	optional int32 reqRoleId		= 2; //邀请者ID
+	optional TEAM_REQ_FRIEND teamReqFriend =3;//邀请类型
+}
+//组队、军团收益加成的百分比，在组队成功，退出队伍时，要刷新
+message STC_TEAM_INCOME_ADD_NUM_MSG{
+	optional int32 num =1;
+}
+
+//拒绝邀请组队
+message CTS_TEAM_REFUSE_MSG {
+	required uint32 reqRoleId			= 1; //邀请者角色ID
+}
+
+//拒绝邀请组队主推给邀请者
+message STC_TEAM_REFUSE_MSG {
+	required string info		= 1; //拒绝提示信息
+}
+
+
+//更换出战坦克
+message CTS_TEAM_CHANGE_TANK_MSG {
+	required uint32 tankId			= 1; //出战坦克ID
+	required string teamId			= 2; //队伍id
+}
+
+
+//出战坦克变化
+message STC_TEAM_CHANGE_TANK_MSG {
+	repeated TankTeamItem tanks		= 1; //坦克列表
+}
+
+//出战准备完成
+message CTS_TEAM_READY_MSG {
+	required string teamId			= 1; //队伍id
+}
+
+//组队匹配
+message CTS_TEAM_MATCH_MSG {
+	required string teamId			= 1; //队伍id
+	required WAR_TYPE warType		= 2; //战场类型
+}
+
+
+//返回组队匹配
+message STC_TEAM_MATCH_MSG {
+	required bool result			= 1; //匹配结果
+	required string info			= 2; //提示信息
+}
+
+//退出队伍
+message CTS_TEAM_QUIT_MSG {
+	required string teamId			= 1; //队伍id
+}
+
+
+//踢人出队伍
+message CTS_TEAM_GOAWAY_MSG {
+	required string teamId			= 1; //队伍id
+	required uint32 roleId			= 2; //被踢者
+}
+
+
+//取消匹配
+message CTS_TEAM_CANCEL_MSG {
+	required string teamId			= 1; //队伍id
+}
+
+//获取匹配时好友列表
+message STC_MATCH_FRI_MSG {
+	repeated FriendItem friends		= 1; //好友列表
+}
+
+
+//请求当前匹配人数
+message CTS_MATCH_COUNT_MSG {
+	required WAR_TYPE warType	= 1;
+}
+
+//返回当前匹配人数
+message STC_MATCH_COUNT_MSG {
+	required WAR_TYPE warType	= 1; //战场类型
+	required uint32 count		= 2; //当前匹配人数
+}
+
+//返回匹配队伍下的军团成员列表
+message STC_MATCH_CORPS_FRI_MSG {
+	repeated FriendItem corpsRoles		= 1; //军团成员列表
+}
+//准备进度
+message CTS_MATCH_SCHEDULE_MSG{
+	required int32  schedule = 1;//准备进度
+}
+//进度体
+message MATCH_SCEDULE_INFO{
+	required int32 roleId =1 ;//roleId
+	required int32 schedule=2;//进度
+}
+//准备进度返回
+message STC_MATCH_SCHEDULE_MSG{
+	repeated MATCH_SCEDULE_INFO infos =1;//进度
+}
+
+
+
+
+//只是退出 ，为了清除客户端队伍信息，临时方案
+message STC_ONLY_QUIT_TEAM_MSG {
+	optional int32 	flag = 1; //占位
+}

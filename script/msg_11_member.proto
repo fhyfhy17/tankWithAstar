@@ -1,0 +1,223 @@
+/********************************************************************
+*	filename: 	msg_11_member.proto
+*	purpose:	成员
+*
+*********************************************************************/
+
+package PROTO_MEMBER;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "MEMBER_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_MEMBER = 11;
+}
+
+enum CMD_ID {
+	CTS_LOTTERY_INFO		= 1; //抽奖信息(空消息)
+	CTS_LOTTERY				= 2; //抽奖
+	CTS_MEMBER_COMPOSITE	= 3; //成员合成
+	CTS_MEMBER_LIST			= 4; //成员列表(空消息)
+	CTS_MEMBER_CHANGE		= 5; //更换成员
+	CTS_MEMBER_LEVEL_UP		= 6; //成员升级
+	CTS_MEDAL_COMPOSITE		= 7; //勋章合成
+	CTS_MEDAL_CHANGE		= 8; //成员勋章替换
+
+	STC_LOTTERY_INFO		= 9; //抽奖信息
+	STC_LOTTERY				= 10; //抽奖
+	STC_MEMBER_COMPOSITE	= 11; //成员合成
+	STC_MEMBER_LIST			= 12; //成员列表
+	STC_MEMBER_CHANGE		= 13; //更换成员
+	STC_MEMBER_LEVEL_UP		= 14; //成员升级
+	STC_MEDAL_COMPOSITE		= 15; //勋章合成
+	STC_MEDAL_CHANGE		= 16; //成员勋章替换
+	STC_MEMBER_UPDATE		= 17; //成员属性变化通知
+	
+	CTS_MEMBER_OPEN_HOLE	= 18; //成员勋章位开孔
+	STC_MEMBER_OPEN_HOLE	= 19; //成员勋章位开孔
+}
+
+enum LotteryType {
+	diamondsOnce		= 1; //钻石单抽
+	diamondsMulti		= 2; //钻石连抽
+	ironOnce			= 3; //银币单抽
+	ironMulti			= 4; //银币连抽
+	diamondsFloor		= 5; //钻石保底
+	ironFloor 			= 6; //银币保底
+	freeIron			= 7; //免费银币单抽
+	freeDiamond			= 8; //免费钻石单抽
+}
+
+enum LotteryRewardType {
+	member 	= 1; //成员
+	goods	= 2; //碎片物品
+	medal	= 3; //勋章
+}
+
+//抽奖奖励信息
+message LotteryItem {
+	required LotteryRewardType type = 1; //奖励类型
+	required uint32 id		 		= 2; //奖励ID
+	required uint32 num 	 		= 3; //奖励数量
+	optional bool hadExist			= 4; //成员已存在
+}
+
+//成员信息
+message MemberItem {
+	required string instanceId	= 1; //成员实例ID
+	required uint32 templateId	= 2; //成员模板ID
+	required uint32 level		= 3; //等级
+	required uint32 exp			= 4; //经验
+	required uint32 aptitude	= 5; //资质
+	repeated uint32 medalIds	= 6; //佩戴的勋章列表
+	required uint32 power		= 7; //战斗力
+}
+
+//正在使用的成员
+message UseMemberItem {
+	required uint32 type 		= 1; //职业
+	required string instanceId	= 2; //成员实例ID
+}
+
+//勋章
+message MedalItem {
+	required uint32 id	= 1; //勋章ID
+	required uint32 num = 2; //数量
+}
+
+//物品
+message GoodsItem {
+	required uint32 goodsId = 1; //物品ID
+	required uint32 num		= 2; //物品数量
+}
+
+
+
+
+/*******************客户端消息*******************************/
+
+//抽奖
+message CTS_LOTTERY_MSG {
+	required LotteryType type = 1; //抽奖类型
+}
+
+//成员合成
+message CTS_MEMBER_COMPOSITE_MSG {
+	required uint32 goodsId 	= 1; //碎片ID
+}
+
+//更换成员
+message CTS_MEMBER_CHANGE_MSG {
+	required bool dumpMedal				= 1; //是否卸掉替换下成员身上的勋章
+	required UseMemberItem newUseMember = 2; //该职业新成员
+}
+
+//成员升级
+message CTS_MEMBER_LEVEL_UP_MSG {
+	required string instanceId		= 1; //要升级的成员实例Id
+	repeated string eatInstanceIds	= 2; //被吃掉的成员实例ID集合
+	repeated GoodsItem goodsItems	= 3; //选择的物品集合
+}
+
+//勋章合成
+message CTS_MEDAL_COMPOSITE_MSG {
+	required uint32 medalId 	= 1; //要合成的勋章ID
+	required uint32 count		= 2; //合成数量
+}
+
+//成员勋章替换
+message CTS_MEDAL_CHANGE_MSG {
+	required string instanceId	= 1; //成员实例ID
+	repeated uint32 medalIds	= 2; //勋章ID集合
+}
+
+//成员勋章位开孔
+message CTS_MEMBER_OPEN_HOLE_MSG {
+	required string instanceId		= 1;	//成员实例ID
+	required uint32 holeIndex		= 2;	//孔索引
+}
+
+	
+/*******************服务器消息*******************************/
+
+//抽奖信息
+message STC_LOTTERY_INFO_MSG {
+	required uint32 diamondsFreeCount 	= 1; //免费钻石抽奖剩余次数
+	required uint32 diamondsCount		= 2; //免费钻石抽奖 距离抽到橙卡剩余次数
+	required uint32 ironFreeCount 		= 3; //免费银币抽奖剩余次数
+	required uint32 ironCount 			= 4; //免费银币抽奖 距离抽到橙卡剩余次数
+	required bool firstDiamondsMulti	= 5; //是否首次金币五连抽（true为首次）
+	optional int32 restTimeIron			= 6; //抽奖剩余冷却时间银币  单位 秒
+	optional int32 restTimeDiamond		= 7; //抽奖剩余冷却时间银币  单位 秒
+}
+
+//抽奖
+message STC_LOTTERY_MSG {
+	required bool success		= 1; //是否成功
+	required string info		= 2; //提示信息
+	required LotteryType type 	= 3; //抽奖类型
+	repeated LotteryItem items 	= 4; //奖励内容	
+}
+
+//成员合成
+message STC_MEMBER_COMPOSITE_MSG{
+	required bool success 		= 1;
+	required string info  		= 2; //提示信息
+	optional MemberItem member	= 3; //合成的新成员
+}
+
+//成员列表
+message STC_MEMBER_LIST_MSG {
+	repeated UseMemberItem useMembers	= 1; //正在使用的成员集合
+	repeated MemberItem members			= 2; //所有成员集合
+}
+
+//更换成员
+message STC_MEMBER_CHANGE_MSG {
+	required bool success = 1;
+	required string info  = 2;//提示信息
+}
+
+//成员升级
+message STC_MEMBER_LEVEL_UP_MSG {
+	required bool success = 1;
+	required string info  = 2;//提示信息
+}
+
+//勋章合成
+message STC_MEDAL_COMPOSITE_MSG {
+	required bool success = 1;
+	required string info  = 2;
+	required uint32 medalId = 3; //要合成的勋章ID
+	required uint32 count 	= 4; //合成数量
+}
+
+//成员勋章替换
+message STC_MEDAL_CHANGE_MSG {
+	required bool success = 1;
+	required string info  = 2;
+}
+
+//成员列表更新推送
+message STC_MEMBER_UPDATE_MSG {
+	required MemberItem member    = 1; //更新的成员
+	required MemberUpdateType type = 2;	 //操作类型
+}
+
+enum MemberUpdateType{
+	ADD		= 1;
+	UPATE	= 2;
+	DELETE	= 3;
+}
+	
+
+//成员勋章位开孔
+message STC_MEMBER_OPEN_HOLE_MSG {
+	required bool 	success 		= 1;
+	required string info 			= 2;
+	required uint32 holeIndex		= 3;	//孔索引
+}
+
+	

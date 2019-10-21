@@ -1,0 +1,134 @@
+/********************************************************************
+*	filename: 	msg_18_memberNew.proto
+*	purpose:	成员新
+*
+*********************************************************************/
+
+package PROTO_MEMBERNEW;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "MEMBERNEW_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_MEMBERNEW = 18;
+}
+
+enum CMD_ID {
+	CTS_MEMBER_NEW_LIST  		=1;//乘员列表
+	STC_MEMBER_NEW_LIST  		=2;//乘员列表返回
+	STC_MEMEBER_NEW_ADD			=3;//乘员更新主推
+	STC_MEMBER_NEW_COLUMN		=4;//乘员栏位主推
+	CTS_MEMBER_NEW_UP_DOWN		=5;//乘员上阵下阵
+	STC_MEMBER_NEW_UP_DOWN		=6;//乘员上阵下阵返回
+	CTS_MEMBER_NEW_LEVEL_UP		=7;//乘员升级
+	STC_MEMBER_NEW_LEVEL_UP		=8;//乘员升级返回
+	CTS_MEMBER_NEW_STAR_UP		=9;//乘员升星
+	STC_MEMBER_NEW_STAR_UP		=10;//乘员升星返回
+	CTS_MEMBER_NEW_CURR_COLUMN	=11;//切换乘员栏
+	STC_MEMBER_NEW_CURR_COLUMN	=12;//切换乘员栏返回
+}
+	
+// =====================================新乘员=============================================	
+enum MEMBER_NEW_QUALITY{
+	GREEN=1;
+	BLUE=2;
+	PURPLE=3; 
+	ORANGE=4;
+}
+	
+	
+message Column_Info{
+	optional int32 column=1;//栏位
+	repeated string memberUniqueIds =2;//乘员们
+	repeated int32 skillIds=3;//触发的技能们 
+}	
+	
+message MEMBER_NEW_INFO{
+	required string uniqueId		=1;// 乘员唯一ID
+	required int32  roleId  		=2;//角色ID
+	required int32  templateId		=3;//模板ID
+	required int32  level			=4;//乘员等级
+	required int32  exp				=5;//乘员经验
+	required bool   active			=6;//是否上阵
+	required MEMBER_NEW_QUALITY quality	=7;//品质
+	required int32 star 			=8;//星级
+	repeated int32 attr				=9;//拥有的属性
+	required MemberNewUpdateType type =10;//乘员操作类型	
+}	
+//乘员列表	
+message CTS_MEMBER_NEW_LIST_MSG{
+	
+}
+//乘员列表返回
+message STC_MEMBER_NEW_LIST_MSG{
+	repeated MEMBER_NEW_INFO infos =1;//
+}
+//乘员更新主推
+message STC_MEMEBER_NEW_ADD_MSG{
+	repeated MEMBER_NEW_INFO infos =1;//
+}
+//乘员栏位主推
+message STC_MEMBER_NEW_COLUMN_MSG{
+	required Column_Info infos =1;//栏位信息
+}
+
+//乘员上阵下阵
+message CTS_MEMBER_NEW_UP_DOWN_MSG{
+	required string uniqueId =1;//唯一ID
+	required int32 type		 =2;//0下阵1上阵
+	required int32 column    =3;//哪一栏	
+}
+//乘员上阵下阵返回
+message STC_MEMBER_NEW_UP_DOWN_MSG{
+	required int32 success = 1;//0失败1成功
+	required string info  = 2;//失败原因
+}
+
+//物品
+message GoodsItem {
+	required uint32 goodsId = 1; //物品ID
+	required uint32 num		= 2; //物品数量
+}
+//成员操作enum
+enum MemberNewUpdateType{
+	ADD		= 1;//添加
+	UPATE	= 2;//更新
+	DELETE	= 3;//删除
+	SHOW	= 4;//展示
+}
+
+//乘员升级
+message CTS_MEMBER_NEW_LEVEL_UP_MSG {
+	required string uniqueId		= 1; //要升级的乘员唯一Id
+	repeated string eatUniqueIdIds	= 2; //被吃掉的乘员唯一ID集合
+	repeated GoodsItem goodsItems	= 3; //选择的物品集合
+}
+//乘员升级返回
+message STC_MEMBER_NEW_LEVEL_UP_MSG {
+	required int32 success = 1;//0失败1成功
+	required string info  = 2;//提示信息
+}
+
+//乘员升星
+message CTS_MEMBER_NEW_STAR_UP_MSG {
+	required string uniqueId		= 1; //要升星的乘员唯一Id
+	repeated string eatUniqueIdIds	= 2; //被吃掉的乘员唯一ID集合
+}
+//乘员升星返回
+message STC_MEMBER_NEW_STAR_UP_MSG {
+	required int32 success = 1;//0失败1成功
+	required string info  = 2;//提示信息
+	optional int32  newAttr =3;//新增加的属性
+}
+//切换乘员栏
+message CTS_MEMBER_NEW_CURR_COLUMN_MSG{
+	required int32 column =1;//当前栏  1，2，3
+}
+//切换乘员栏返回
+message STC_MEMBER_NEW_CURR_COLUMN_MSG{
+	required int32 success = 1;//0失败1成功
+}
+
+

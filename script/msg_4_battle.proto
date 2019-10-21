@@ -1,0 +1,756 @@
+/********************************************************************
+*	filename: 	BATTLE_MSG.proto
+*	purpose:	战斗相关信息
+*
+*********************************************************************/
+
+package PROTO_BATTLE;
+
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "BATTLE_MSG";
+
+enum CMD_TYPE
+{
+    CMD_TYPE_BATTLE = 4;
+};
+
+enum CMD_ID
+{
+    CTS_MOVE                   	= 1;   //!移动
+    CTS_AIM                    	= 2;   //!瞄准
+    CTS_FIRE                   	= 3;   //!开火
+    CTS_HIT                    	= 4;   //!命中
+    CTS_RELIVE                 	= 5;   //!复活
+    CTS_ROBOT_MOVE			   	= 6;   //AI移动(废弃)
+    CTS_ROBOT_FIRE			   	= 7;   //AI开火(废弃)
+	CTS_ROBOT_HIT			   	= 8;   //AI击中(废弃)
+	CTS_WAR_REPORT			   	= 9;   //战报(空命令)
+	CTS_USE_WAR_GOODS			= 10;  //使用战场道具
+	
+    STC_ATTR_SYN       		   	= 11;   //!同步坦克属性
+	STC_MOVE                   	= 12;   //!移动
+    STC_AIM                    	= 13;   //!瞄准
+    STC_FIRE                   	= 14;  //!开火
+    STC_HIT                    	= 15;  //!命中
+    STC_TANK_DIE               	= 16;  //!坦克死亡
+    STC_TANK_RELIVE            	= 17;  //!坦克复活
+    STC_WAR_REPORT			   	= 18;  //!战报
+    STC_HIT_EFFECT			   	= 19;  //命中效果
+    STC_WAR_SCORE			   	= 20;  //比赛比分
+    STC_HOLD_FLAG			   	= 21;  //占领旗子 
+    STC_HOLD_STOP		       	= 22;  //占领取消 (空命令)
+    STC_HOLD_PAUSE			   	= 23;  //占领暂停 (空命令)
+    STC_KILL_TIPS			   	= 24;  //击杀提示信息 
+    STC_DEL_EFFECT			   	= 25;  //删除buff效果
+    STC_USE_WAR_GOODS			= 26;  //使用战场道具返回
+    STC_MINE_BOMB				= 27;  //地雷爆炸
+    STC_MINE_LOCATION			= 28;  //地雷位置
+    STC_USE_WAR_EFFECT			= 29;  //使用道具效果
+    
+    CTS_USE_SKILL				= 30;	//使用技能
+    
+    STC_USE_SKILL				= 31;	//使用技能返回
+    STC_USE_SKILL_EFFECT		= 32;	//使用技能效果
+    STC_CLEAR_FILE_COOL			= 33;	//清除开炮cd (空命令)
+	
+	STC_USER_WAR_RECORD			= 34;	//玩家战绩信息
+	
+	STC_AI_MOVE					= 35;	//AI移动
+	STC_AI_FIRE					= 36;	//AI开火
+	
+	STC_DROP_LOCATION			= 37;	//战场掉落主推消息
+	STC_DROP_CLEAR				= 38;	//战场掉落清除
+	STC_DROP_DRAW				= 39;	//领取战场掉落主推消息
+	
+	CTS_HANGUP					= 40;	//挂机(空命令)
+	CTS_ONE_VIEW				= 41;	//视野信息（看见的坦克）
+	STC_ONE_VIEW				= 42;	//视野信息（看见的坦克）返回
+	STC_HIT_INCOME				= 43;   //击打收益主推
+	STC_HIT_INCOME_ICON			= 44;	//击打收益图标主推
+};
+
+
+enum AttrType
+{
+	hp              			= 1;  	//当前血量
+	maxHp						= 2;	
+	fdef						= 3;	//前护甲
+	idef						= 4;	//侧护甲
+	bdef						= 5;	//后护甲
+	derate						= 6;	//伤害减免
+	fdodge						= 7;	//前跳弹值
+	idodge						= 8;	//侧跳弹值
+	bdodge						= 9;	//后跳弹值
+	atk							= 10;	//攻击力
+	chuanjia					= 11;	//穿甲值
+	chuanjia_rat				= 12;	//穿甲浮动比率
+	mul_chuanjia				= 13;	//穿甲暴击倍率
+	mul_dodge					= 14;	//跳弹伤害倍率
+	range						= 15;	//射程
+	danjia_time					= 16;	//弹夹填弹时间
+	danjia_num					= 17;	//弹夹填装个数
+	speed						= 18;	//速度
+	rotate_speed				= 19;	//车身转动速度
+	can_pre						= 20;	//火炮精度
+	focal_radil_move			= 21;	//准心半径_移动
+	focal_radil_lock			= 22;	//准心半径_锁定
+	focal_radil_static			= 23;	//准心半径_静止
+	focal_radil_fire			= 24;	//准心半径_开火
+	focal_speed_move			= 25;	//准心缩放速度_移动
+	focal_speed_lock			= 26;	//准心缩放速度_锁定
+	focal_speed_static			= 27;	//准心缩放速度_静止
+	focal_speed_fire			= 28;	//准心缩放速度_开火
+	camera_ratate_speed			= 29;	//摄像机旋转速度
+	followcamera_speed			= 30;	//炮台跟随摄像机速度
+	breath_time					= 31;	//准心缩放周期
+	breath_mult_range			= 32;	//准心半径周期
+	focal_distance_max			= 33;	//准心锁定最远距离
+	focal_distance_min			= 34;	//准心锁定最近距离
+	active_lock_angle			= 35;	//手动锁定角度
+	cat_damed_rat				= 36;	//火炮受损率
+	cat_bre_rat					= 37;	//履带受损率
+	fire_rat					= 38;	//机身起火率
+	speed_slow_rat				= 39;	//引擎受损率
+	cd_slow_rat					= 40;	//弹药架受损率
+	view						= 41;	//视野
+	focalFireTime				= 42;	//圈开火放大时间
+	elevation					= 43;	//俯视角
+	z_speed						= 44;	//上下调整速度
+	sidewayFrictionExtremumSlip = 45;	//车身旋转极值(默认5,范围1~无穷大)
+	auto_lock_angle				= 47;	//自动锁定角度
+	out_auto_lock_angle			= 48;	//脱离自动锁定角度
+	head_rotate_speed			= 49;	//炮管锁定旋转角度
+	head_auuto_rotate_speed		= 50;	//炮管自动锁定旋转角度
+	auto_lock_inertia_speed		= 51;	//自动锁定惯性速度
+	lock_itervaltime			= 52;	//目标锁定间隔
+	crew_hp						= 53;	//成员血量加成比率
+	crew_act					= 54;	//成员攻击加成比率
+	crew_rate					= 55;	//成员射速加成比率
+	crew_speed					= 56;	//成员速度加成比率
+	acceleration_time_start     = 57;   //加速曲线起始时间
+	acceleration_value_start    = 58;   //加速曲线起始值
+	acceleration_time_end       = 59;   //加速曲线结束时间
+	acceleration_value_end      		= 60;   //加速曲线结束值
+	acceleration_break_time_start		= 61;   //加速衰减
+	acceleration_break_value_start		= 62;
+	acceleration_break_time_end   		= 63;
+	acceleration_break_value_end  		= 64;
+	r_acceleration_time_start    		= 65;   //加速时旋转曲线
+	r_acceleration_value_start   		= 66;
+	r_acceleration_time_end      		= 67;
+	r_acceleration_value_end    		= 68;
+    r_acceleration_break_time_start    	= 69;   //加速时旋转衰减
+	r_acceleration_break_value_start  	= 70;
+	r_acceleration_break_time_end      	= 71;
+	r_acceleration_break_value_end     	= 72;
+	r_stay_time_start    				= 73;   //静止时旋转曲线
+	r_stay_value_start   				= 74;
+	r_stay_time_end      				= 75;
+	r_stay_value_end     				= 76;
+    r_stay_break_time_start    			= 77;   //静止时旋转衰减
+	r_stay_break_value_start   			= 78;
+	r_stay_break_time_end      			= 79;
+	r_stay_break_value_end     			= 80;
+	crew_chuanjia						= 81;	//成员穿甲加成比率
+	crew_fdef							= 82;	//成员前护甲加成比率
+	crew_idef							= 83;	//成员侧护甲加成比率
+	crew_bdef							= 84;	//成员后护甲加成比率
+	stable_add							= 85;	//稳定加成
+	
+	maxHp_add_rat						= 86;	//最大血量加成比率
+	fdef_add_rat						= 87;	//前护甲加成比率
+	idef_add_rat						= 88;	//侧护甲加成比率
+	bdef_add_rat						= 89;	//后护甲加成比率
+	atk_add_rat							= 90;	//攻击力加成比率
+	chuanjia_add_rat					= 91;	//穿甲值加成比率
+	speed_add_rat						= 92;	//速度加成比率
+	crew_maxHp_add_rat					= 93;	//成员血量加成比率
+	crew_atk_add_rat					= 94;	//成员攻击加成比率
+	crew_danjia_add_rat					= 95;	//成员添弹时间加成比率
+	crew_speed_add_rat					= 96;	//成员速度加成比率
+	crew_chuanjia_add_rat				= 97;	//成员穿甲加成比率
+	crew_fdef_add_rat					= 98;	//成员前护甲加成比率
+	crew_idef_add_rat					= 99;	//成员侧护甲加成比率
+	crew_bdef_add_rat					= 100;	//成员后护甲加成比率
+	weight								= 101;	//重量
+	positive_friction					= 102;	//正向摩擦力
+	lateral_friction					= 103;	//侧向摩擦力
+	fire_skew							= 104;	//开炮偏移
+	out_active_lock_angle				= 105; //脱离手动锁定角度
+	had_revolve							= 106; //是否能转动炮塔
+	sliding_speed						= 107; //滑屏速度
+	wheel_weight						= 108; //轮子的重量
+	sideways_extrenum_value				= 109; 
+	sideways_asymptote_slip				= 110;
+	sideways_asymptote_value			= 111;
+	forward_extrenum_slip				= 112;
+	forward_extrenum_value				= 113;
+	forward_asymptote_slip				= 114;			
+	forward_asymptote_value				= 115;
+	auto_brake_star_speed				= 116;
+	auto_brake_end_speed				= 117;
+	auto_brake_force_scale				= 118;
+	wheel_suspension_distance			= 119;
+	wheel_suspension_spring				= 120;
+	wheel_suspension_damper				= 121;
+	wheel_suspension_target_postion		= 122;
+	tank_on_fire_force					= 123;
+	tank_on_beat_force					= 124;
+	wheel_radius						= 125;
+	tank_top_speed						= 126;
+	tank_top_speed_back					= 127;
+	up_hill_start_angle					= 128;
+	up_hill_end_angle					= 129;
+	up_hill_mid_angle					= 130;
+	up_hill_mid_power					= 131;
+	
+	n_minHit                            = 132;//最小伤害
+	n_maxHit							= 133;//最大伤害
+	n_crit								= 134;//暴击
+	n_isNear							= 135;//有无近程伤害
+	n_isFar								= 136;//有无远程伤害
+	n_fireSpeed							= 137;//射击速度
+	n_stab								= 138;//穿透力
+	n_minPrecision						= 139;//最小精度
+	n_maxPrecision						= 140;//最大精度
+	n_aimSpeed							= 141;//瞄准速度
+	n_hpMax								= 142;//最大生命值 
+	n_dr								= 143;//伤害减免
+	n_ArmorTurretFront					= 144;//炮塔装甲前
+	n_ArmorTurretMiddle					= 145;//炮塔装甲侧
+	n_ArmorTurretbehind					= 146;//炮塔装甲后	
+	n_ArmorBodyFront					= 147;// 车身装甲前
+	n_ArmorBodyMiddle					= 148;//车身装甲侧
+	n_ArmorBodybehind					= 149;//车身装甲后	
+	n_turrentSpeep						= 150;//炮塔转速
+	n_bodySpeed							= 151;//车身转速
+	n_nimble							= 152;//灵活度
+	n_speed								= 153;//速度
+	n_speedUp							= 154;//加速能力
+	n_view								= 155;//视野
+	n_camouflage						= 156;//伪装
+	
+	
+	maxAngularDegree 					=157;	//每秒角度	
+	steerTorque							=158;//辅助转向，值越大转向越快
+	wheelLROffset						=159;	//车轮位置往外偏移，增加车轮距
+	engineTorque						=160;	//动力
+	brakeTorque							=161;	//刹车阻力
+	MassCenterOffsetX					=162;	//车子重心偏移X
+	MassCenterOffsetY					=163;	//车子重心偏移Y
+	MassCenterOffsetZ					=164;//车子重心偏移Z
+	sideways_stiffness					=165;//正面僵直
+	forward_stiffness					=166;//侧僵直
+	engineTorqueK						=167;//动力系数
+	wheelDampingRate					=168;//车轮阻力
+	elevation1							=169;//俯视角
+	
+}
+
+message Coordinate3D
+{
+    required float    px       = 1; //x 
+    required float    py       = 2; //y 
+    required float    pz       = 3; //z 
+}
+
+//CTS_MOVE
+message CTS_MOVE_MSG
+{
+    required uint32       TickCount       = 1; //客户端计时
+    required Coordinate3D Position        = 2; //当前坐标
+    required uint32       AimDirection    = 3; //当前瞄准方向
+    required uint32       MoveDirection   = 4; //当前移动方向
+    required float        MoveSpeed       = 5; //当前移动速度
+    required uint32       State           = 6; //移动状态
+    required Coordinate3D Rotation        = 7; //旋转方向
+	required Coordinate3D Force           = 8;
+}
+
+//CTS_AIM
+message CTS_AIM_MSG
+{
+    required uint32       AimState      = 1; //瞄准状态
+    required Coordinate3D AimPosition   = 2; //瞄准点
+}
+
+
+enum FireType {
+	fire		= 1; //开火
+	goods		= 2; //使用道具
+	skill		= 3; //使用成员技能
+	immune		= 4; //免疫
+}
+
+
+//CTS_FIRE
+message CTS_FIRE_MSG
+{
+    required uint32          TickCount       = 1; //客户端计时
+    required uint32          TargetId    	 = 2; //攻击的目标
+    required Coordinate3D    TargetPosition  = 3; //攻击的位置
+    required float           Direction       = 4; //炮塔的角度
+    required FireType		 fireType		 = 5; //开火类型
+    required uint32          StdItem         = 6; //使用的炮弹
+    required bool 		     hadDodge		 = 7; //是否跳弹
+	required float           skewX			 = 8; //偏移x
+	required float           skewY			 = 9; //偏移y
+}
+
+//CTS_HIT
+message CTS_HIT_MSG
+{
+    required uint32       TargetId         = 1; //命中目标
+    required uint32       HitPart          = 2; //命中部位 0前,1侧,2后
+    required bool 		  hadDodge		   = 3; //是否跳弹
+    required FireType	  fireType		   = 4; //开炮类型
+    required uint32       stdItem      	   = 5; //使用的炮弹
+}
+
+
+
+
+//STC_MOVE
+message STC_MOVE_MSG
+{
+    required uint32       Id         	= 1;  //坦克实例ID
+    required Coordinate3D Position      = 2;  //当前坐标(如果没有就是停止在当前位置)
+    required uint32       AimDirection  = 3;  //当前瞄准方向
+    required uint32       MoveDirection = 4;  //当前移动方向    
+    required float        MoveSpeed     = 5;  //当前移动速度
+    required uint32       State         = 6;  //移动状态
+    required uint32       TickCount     = 7;  //客户端计时
+    required Coordinate3D Rotation      = 8;  //旋转方向
+	required Coordinate3D Force         = 9;
+}
+
+//STC_AIM
+message STC_AIM_MSG
+{
+    required uint32       Id         	= 1; //角色索引
+    required uint32       AimState      = 2; //瞄准状态
+    required Coordinate3D AimPosition   = 3; //瞄准点
+}
+
+//STC_FIRE
+message STC_FIRE_MSG
+{
+    required uint32         SourceId       	 = 1; //发起攻击的对象索引
+    required uint32         TargetId      	 = 2; //被攻击的对象索引
+    required Coordinate3D   TargetPosition   = 3; //攻击的位置
+    required float          Direction        = 4; //炮塔的角度
+    required FireType		 fireType		 = 5; //开炮类型
+    required uint32         StdItem          = 6; //使用的炮弹
+    required bool 		    hadDodge		 = 7; //是否跳弹
+	required float           skewX			 = 8; //偏移x
+	required float           skewY			 = 9; //偏移y
+}
+
+enum HitType {
+	common		= 1; //普通伤害
+	chuajia		= 2; //穿甲伤害
+	dodge		= 3; //跳弹伤害
+}
+
+
+//命中消息
+message STC_HIT_MSG
+{
+    required uint32 	SourceId    	= 1;   //攻击者
+    required uint32 	TargetId    	= 2;   //被攻击者
+    required HitType 	type			= 3;   //伤害类型
+    required uint32 	Damage          = 4;   //伤害数值
+    required uint32		HitPart         = 5;   //命中部位 0前,1侧,2后,3无
+    required FireType	fireType		= 6;   //开炮类型
+    required uint32		stdItem      	= 7;   //使用的炮弹
+}
+
+
+//坦克死亡消息
+message STC_TANK_DIE_MSG
+{
+    required uint32 Id        		= 1;   //坦克实例ID
+    required uint32 reliveTime    	= 2;   //复活时间
+    required bool hasRelive			= 3;   //是否能复活(不可复活客户端回收坦克资源)
+    required bool payRelive			= 4;   //是否可花钱复活(不可花钱复活则不显示复活按钮)
+    required uint32 gold			= 5;   //复活需要金币数 
+    required uint32 freeCount		= 6;   //免费复活次数
+	required string atkName			= 7;   //攻击者名称
+	required uint32 atkTankId		= 8;   //攻击者坦克ID
+	required uint32 atkId			= 9;   //攻击者实例id
+}
+
+
+//坦克复活消息
+message STC_TANK_RELIVE_MSG
+{
+    required uint32         id     		= 1;   //坦克实例ID
+    required float			dir			= 2;   //朝向
+    required Coordinate3D   position  	= 3;   //复活的位置
+}
+
+message PropUnit
+{
+    required uint32 id  = 1;
+    required float val = 2;
+}
+
+//坦克属性同步
+message STC_ATTR_SYN_MSG
+{
+	required uint32	  Id  		= 1;	 //坦克实例ID
+    repeated PropUnit Props  	= 2;     //属性列表
+}
+
+
+//比赛比分
+message STC_WAR_SCORE_MSG {
+	required uint32 time				= 1;	//剩余时间(秒)
+	required uint32 blue				= 2;	//蓝方击杀数
+	required uint32 red					= 3;	//红方击杀数 
+}
+
+
+//比赛奖励Item
+message WarRewardsItem {
+	required uint32 vipMul				= 1; //vip等级倍数 0 表示没有
+	required uint32 goldTankMul			= 2; //金币坦克加成倍数  0 表示没有
+	required uint32 activityMul			= 3; //获得加成倍数 0 表示没有
+	required PlusItem tankExp			= 4; //坦克经验
+	required PlusItem honor				= 5; //荣誉点
+	required PlusItem roleTankExp		= 6; //全局坦克经验
+	required PlusItem iron				= 7; //银币数
+	required bool handup				= 8; //是否挂机
+}
+
+//新收益额外加成类型
+enum WarRewardEnum{
+	SP_TANK =1;//特殊车
+	WEAK_TEAM=2;//遭遇强敌
+	CALL_UP=3;//战斗召唤
+	FRIEND=4;//好友
+	CROP=5;//军团
+	VIP=6;//VIP
+}
+//新收益 图标
+message WarRewardEnumInfo{
+	optional WarRewardEnum type=1;//类型
+	repeated string content=2;//文字内容
+}
+//新收益
+message WarRewardInfo{
+	repeated WarRewardEnumInfo infos=1;//收益图标
+	optional int32 totalExp=2;//总单车经验
+	optional int32 totalIron=3;//总银币
+	optional int32 roleTotalExp=4;//全局坦克总经验
+	optional bool handup				= 5; //是否挂机
+	optional int32 vip			=6;//VIP等级
+}
+
+
+
+//加成值Item
+message PlusItem {
+	required uint32 baseValue	= 1; //获得基础值(为0不显示)
+	required uint32 vip			= 2; //vip加成值
+	required uint32 goldTank	= 3; //金币坦克加成值
+	required uint32 activity	= 4; //活动加成值
+	required uint32 tankId		= 5; //所使用的坦克id
+	optional uint32 isWeakTeam	= 6; //遭遇强敌加成值
+	optional int32  teamIncome  = 7; //组队收益加成 
+}
+
+
+//比赛结束item
+message WarResultItem {
+	required uint32 mvpRoleId			= 1;	//MVP拥有者
+	required uint32 mvpCount			= 2; 	//获得mvp的累计次数
+	required uint32 time				= 3; 	//所用时间
+	required uint32 result				= 4;    //比赛结果 0：没结果  1：红方获胜 2：蓝方获胜
+	required uint32 blue				= 5;	//蓝方击杀数
+	required uint32 red					= 6;	//红方击杀数 
+	required bool	flagWin				= 7;	//是否占旗获胜
+}
+
+
+//战报信息
+message STC_WAR_REPORT_MSG {
+		
+	repeated WarReportItem reports		= 1; 	//战报信息
+	required WarResultItem result		= 2;	//比赛结果
+//	optional WarRewardsItem rewards		= 3;	//战斗奖励
+	optional string uniqueId			= 4; 	//战场唯一ID，目前用来领取红包用
+	optional bool redMoney				= 5;	//本场是否有红包
+	optional WarRewardInfo rewardInfo   = 6;	//新战斗奖励
+}
+
+message WarReportItem {
+	required uint32 id						= 1;  //坦克实例ID
+	required uint32 tankId					= 2;  //坦克模板ID
+	required uint32 elite					= 3;  //是否为精英坦克(0:不是 1:是)
+	required string roleName				= 4;  //角色名称
+	required uint32 team					= 5;  // 1：红  2：蓝
+	required uint32 kill					= 6;  //击杀数
+	required uint32 death					= 7;  //死亡数
+	required uint32 helpKill				= 8;  //助攻数
+	required uint32 aidKill					= 9;  //协助数
+	required uint32 mvpFlag					= 10;  //mvp标识(1: mvp)
+	required float mvpScore					= 11; //mvp得分
+	required uint32 level					= 12; //玩家等级
+	required uint32 titleId					= 13; //军衔
+	required uint32 battleScore				= 14; //战斗力
+	required uint32 roleId					= 15; //角色ID
+	optional WarStatisticsItem statisItem	= 16; //统计数据
+	optional string pfUserInfo				= 17; //蓝钻信息
+	optional string pfYellowUserInfo		= 18; //黄钻信息
+	optional int32 rank						= 19;//排行 
+}
+
+//统计信息
+message WarStatisticsItem {
+	required uint32 damage					= 1;  //输出总伤害
+	required float damagePer				= 2;  //输出伤害占比
+	required uint32 receiveDamage			= 3;  //承受总伤害
+	required float receiveDamagePer			= 4;  //承受伤害占比
+	required uint32 aidDamage				= 5;  //协作伤害
+	required float aidDamagePer				= 6;  //协作伤害占比
+}
+
+
+
+//触发效果
+message STC_HIT_EFFECT_MSG {
+	required uint32 id				= 1; //坦克实例ID
+	required uint32 effectId		= 2; //效果类型
+	required uint32 time			= 3; //持续时间(单位:秒)
+}
+
+//删除buff效果
+message STC_DEL_EFFECT_MSG {
+	required uint32 id			= 1; //坦克实例ID
+	required uint32 effectId	= 2; //删除效果类型
+}
+
+
+//AI移动
+message CTS_ROBOT_MOVE_MSG {
+	required uint32		  id		  	  = 1; //AI Id
+    required uint32       tickCount       = 2; //客户端计时
+    required Coordinate3D position        = 3; //当前坐标
+    required uint32       aimDirection    = 4; //当前瞄准方向
+    required uint32       moveDirection   = 5; //当前移动方向
+    required float        moveSpeed       = 6; //当前移动速度
+    required uint32       state           = 7; //移动状态
+    required Coordinate3D rotation        = 8; //旋转方向
+	required Coordinate3D force           = 9; 
+}
+
+//AI开火
+message CTS_ROBOT_FIRE_MSG {
+	required uint32		  	 id		  	 	 = 1; //AI Id
+	required uint32          tickCount       = 2; //客户端计时
+    required uint32          targetId    	 = 3; //攻击的目标
+    required Coordinate3D    targetPosition  = 4; //攻击的位置
+    required float           direction       = 5; //炮塔的角度
+    required uint32          stdItem         = 6; //使用的炮弹
+    required bool 		     hadDodge		 = 7; //是否跳弹
+	required float           skewX			 = 8; //偏移x
+	required float           skewY			 = 9; //偏移y
+}
+
+//AI命中
+message CTS_ROBOT_HIT_MSG {
+	required uint32		  SourceId		   = 1; //开火者
+	required uint32       TargetId         = 2; //命中目标
+    required uint32       HitPart          = 3; //命中部位 0前,1侧,2后
+   	required bool 		  hadDodge		   = 4; //是否跳弹
+}
+
+//战旗时间
+message STC_HOLD_FLAG_MSG {
+	required uint32 teamId				= 1; //占领方 1:红 2: 蓝
+	required uint32 currTime			= 2; //当前占领秒数
+	required uint32 endTime				= 3; //最大结束秒数
+}
+
+
+//击杀提示
+message STC_KILL_TIPS_MSG {
+	required uint32 tankId		= 1;	//坦克模板ID
+	required string userName	= 2;	//玩家名称
+	required uint32 team		= 3;	//所属团队 1：红 2：蓝
+	required uint32 dieTankId	= 4;	//被击杀坦克模板ID
+	required TipType tipType	= 5;	//提示类型
+	required string dieName		= 6;	//死亡玩家名称
+}
+
+enum TipType{
+	kill				= 1; //普通击杀
+	first_kill			= 2; //第一滴血
+	double_kill			= 3; //双杀
+	three_kill			= 4; //三杀
+	four_kill			= 5; //四杀
+	five_kill			= 6; //五杀
+	special_kill		= 7; //大杀特杀
+	erupt_kill			= 8; //暴走
+	no_stop_kill		= 9; //无人可挡
+	dominate			= 10; //主宰比赛
+	god					= 11; //接近神
+	super_god			= 12; //超神
+	stop_kill			= 13; //终结
+	aced				= 14; //团灭
+}
+
+message CTS_USE_WAR_GOODS_MSG {
+	required uint32 id			= 1; //道具id
+}
+
+
+message STC_USE_WAR_GOODS_MSG {
+	required uint32 result		= 1; //1:成功 0:失败
+	optional string info		= 2; //错误提示信息
+	optional uint32 id			= 3; //道具id
+	optional uint32 num			= 4; //剩余数量
+}
+
+//广播使用效果
+message STC_USE_WAR_EFFECT_MSG {
+	required uint32 id		= 1;	//坦克id
+	required uint32 goodsId	= 2;	//使用物品id
+}
+
+
+message STC_MINE_BOMB_MSG {
+	required uint32 id		= 1;	//地雷实例id
+	required uint32 goodsId	= 2;	//爆炸地雷物品id
+}
+
+message STC_MINE_LOCATION_MSG {
+	required uint32 id		= 1;	//地雷实例id
+	required uint32 team	= 2;	//队伍类型 1:红方 2:蓝方
+	required uint32 goodsId	= 3;	//爆炸地雷物品id
+	required float x		= 4; 
+	required float y		= 5;
+	required float z		= 6;
+}
+
+//使用技能
+message CTS_USE_SKILL_MSG {
+	required uint32 skillId		= 1; //使用技能id
+	required uint32 targetId	= 2; //目标坦克id
+}
+
+//使用技能返回
+message STC_USE_SKILL_MSG {
+	required uint32 result		= 1; //1:成功 0:失败
+	optional string info		= 2; //错误提示信息
+}
+
+message STC_USE_SKILL_EFFECT_MSG {
+	required uint32 id			= 1;	//坦克id
+	required uint32 skillId		= 2;	//触发技能id
+}
+
+
+message STC_USER_WAR_RECORD_MSG {
+	required uint32 kill		= 1;  //击杀数
+	required uint32 death		= 2;  //死亡数
+	required uint32 helpKill	= 3;  //助攻数 
+	required uint32 aidKill		= 4;  //协助数
+}
+
+
+//AI移动消息
+message STC_AI_MOVE_MSG {
+	required uint32			id				= 1;	//坦克实例ID
+    required Coordinate3D	position		= 2;	//当前坐标
+    required uint32			target			= 3;	//瞄准目标(0:为无目标)
+}
+
+
+//AI命中消息
+message STC_AI_FIRE_MSG{
+    required uint32 		sourceId    	= 1;   //攻击者
+    required uint32 		targetId    	= 2;   //被攻击者
+    required FireType		fireType		= 3;   //开炮类型
+    required uint32         stdItem         = 4;   //使用的炮弹
+    required bool 		    hadDodge		= 5;   //是否跳弹
+	required float          skewX			= 6;   //偏移x
+	required float          skewY			= 7;   //偏移y
+}
+
+
+//战场掉落主推消息
+message STC_DROP_LOCATION_MSG {
+	required uint32 id			= 1;	//掉落实例id
+	required uint32 moneyType	= 2;	//金币类型 3：金币 4：钻石
+	required float x			= 4; 
+	required float y			= 5;
+	required float z			= 6;
+}
+
+//战场掉落消失
+message STC_DROP_CLEAR_MSG {
+	required uint32 id			= 1;	//掉落实例id
+}
+
+
+//领取战场掉落奖励
+message STC_DROP_DRAW_MSG {
+	required uint32 moneyType	= 1;	//金币类型 3：金币 4：钻石
+	required uint32 count		= 2;	//数量
+}
+
+//视野信息（看见的坦克）
+message CTS_ONE_VIEW_MSG{
+	repeated int32 tankIds =1;//能看见的坦克
+	required bool inclue_date=2;//是否有数据，为 false时，代表清空，无数据
+}
+//视野信息（看见的坦克）返回
+message STC_ONE_VIEW_MSG{
+	required int32 tankId =1;//所属者ID
+	repeated int32 tankIds =2;//能看见的坦克
+	required bool inclue_date=3;//是否有数据，为 false时，代表清空，无数据
+}
+
+//----------------------新击打 收益-------------------------------------
+//击打收益类型
+enum INCOME_TYPE{
+	INCOME_TYPE_FIND =1;//发现目标
+	INCOME_TYPE_STAB =2;//击穿目标
+	INCOME_TYPE_CRIT =3;//重创目标
+	INCOME_TYPE_HITDIE=4;//击毁目标
+}
+//击打收益体
+message HIT_INCOME_INFO{
+	optional INCOME_TYPE type =1;//类型
+	optional int32 exp=2;//经验
+	optional int32 iron=3;//银币 
+}
+
+//击打收益主推
+
+message STC_HIT_INCOME_MSG{
+	repeated HIT_INCOME_INFO infos=1;//
+	required uint32 	sourceId    	= 2;   //攻击者
+    required uint32 	targetId    	= 3;   //被攻击者
+	required uint32 	damage          = 4;   //伤害数值
+	
+}
+
+//击打图标类型
+enum INCOME_ICON_TYPE{
+	INCOME_ICON_BEFOUND=1;//被发现
+	INCOME_ICON_CRIT=2;//暴击
+	INCOME_ICON_UNSTAB=3;//未穿透
+	INCOME_ICON_HITDIE=4;//击毁
+	INCOME_ICON_HELP=5;//助攻
+}
+//击打收益图标主推
+message STC_HIT_INCOME_ICON_MSG{
+	optional INCOME_ICON_TYPE type = 1;
+}
+
+

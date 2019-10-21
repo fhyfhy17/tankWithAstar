@@ -1,0 +1,468 @@
+/********************************************************************
+*	filename: 	msg_16_activity.proto
+*	purpose:	活动
+*
+*********************************************************************/
+
+package PROTO_ACTIVITY;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "ACTIVITY_MSG";
+
+
+enum CMD_TYPE {
+	CMD_TYPE_ACTIVITY = 16;
+}
+
+enum CMD_ID {
+	CTS_ACTIVITY_SEVENLOGIN				= 1; //七日登录请求（空消息）
+	STC_ACTIVITY_SEVENLOGIN				= 2; //七日登录返回
+	
+	CTS_ACTIVITY_SEVENLOGIN_DRAW 		= 3; //七日奖励领取请求（空消息）
+	STC_ACTIVITY_SEVENLOGIN_DRAW 		= 4; //七日奖励领取返回
+	
+	CTS_ACTIVITY_MONTHLOGIN				= 5;	//月签到请求(空消息)
+	STC_ACTIVITY_MONTHLOGIN				= 6;
+	
+	CTS_ACTIVITY_MONTHLOGIN_SIGN		= 8;	//签到（空消息）
+	STC_ACTIVITY_MONTHLOGIN_SIGN		= 9;
+	
+	CTS_ACTIVITY_MONTHLOGIN_FILL_SIGN	= 10;	//补签请求（空消息）。回STC_ACTIVITY_MONTHLOGIN_SIGN
+	STC_ACTIVITY_MONTHLOGIN_FILL_SIGN	= 11;	
+	
+	CTS_ACTIVITY_MONTHLOGIN_POINT_DRAW	= 12;	//领取结点奖励
+	STC_ACTIVITY_MONTHLOGIN_POINT_DRAW 	= 13;
+	
+	CTS_ACTIVITY_DAILY_LIST 			= 14; 	//获取日常活动列表 (空消息)
+	STC_ACTIVITY_DAILY_LIST				= 15;	
+	
+	CTS_ACTIVITY_DAILY_TAB_DRAW		 	= 16;	//领取日常活动奖励
+	STC_ACTIVITY_DAILY_TAB_DRAW			= 17;
+	
+	CTS_ACTIVITY_NOTICE_LIST			= 18;	//获取游戏公告（空消息）
+	STC_ACTIVITY_NOTICE_LIST			= 19;
+	
+	CTS_RED_PACKET_LIST					= 20;	//获取红包活动页面(空消息)
+	STC_RED_PACKET_LIST					= 21;
+		
+	CTS_RED_PACKET_DRAW					= 22;	//领取红包(空消息)
+	STC_RED_PACKET_DRAW					= 23;
+	
+	CTS_MONTH_CARD_LIST					= 25;	//请求月卡(空消息)
+	STC_MONTH_CARD_LIST 				= 26;
+	
+	CTS_MONTH_CARD_BUY					= 27;	//月卡购买
+	STC_MONTH_CARD_BUY					= 28;
+	
+	CTS_MONTH_CARD_BUY_FAIL				= 29;	//购买月卡失败
+	
+	CTS_DAILY_GRAB_LIST					= 30;	//请求每日必秒活动页面（空消息）
+	STC_DAILY_GRAB_LIST 				= 31;
+	
+	CTS_DAILY_GRAB_RECHARGE				= 32;	//每日必秒，充值(空消息)
+	STC_DAILY_GRAB_RECHARGE				= 33;
+	
+	CTS_DAILY_GRAB_DRAW					= 34;	//每日必秒，领奖(空消息)
+	STC_DAILY_GRAB_DRAW					= 35;
+	
+	CTS_ACTIVITY_HALL_LIST 				= 36;	//请求大厅活动列表（空消息）
+	STC_ACTIVITY_HALL_LIST				= 37;
+	
+	CTS_FIRST_PAY_REWS					= 38;	//首充奖励信息(空消息)
+	STC_FIRST_PAY_REWS					= 39;	//返回首充奖励信息
+	
+	CTS_FIRST_PAY_DRAW					= 40;	//首充领奖（空消息）
+	STC_FIRST_PAY_DRAW					= 41;
+	
+	CTS_DAILY_GRAB_BUY_FAIL				= 42; 	//每日必秒活动，充值失败
+	
+	CTS_BIND_TANK1_ACCOUNT				= 43;	//绑定tank1账号
+	STC_BIND_TANK1_ACCOUNT				= 44;	
+	
+	CTS_BIND_TANK1_ACCOUNT_STATE		= 45;	//绑定tank1账号状态(空消息)
+	STC_BIND_TANK1_ACCOUNT_STATE		= 46;	
+	
+	CTS_KEEP_ONLINE_REWS				= 47;	//在线奖励信息(空消息)
+	STC_KEEP_ONLINE_REWS				= 48;	//返回在线奖励信息
+	
+	CTS_KEEP_ONLINE_DRAW				= 49;	//在线奖励领奖（空消息）
+	STC_KEEP_ONLINE_DRAW				= 50;
+	
+	CTS_LuckyWheel_Info					= 51;   //幸运转盘
+	STC_LuckyWheel_Info					= 52;   //幸运转盘返回
+	
+	CTS_LuckyWheel_GET					= 53; 	//幸运转盘转起来 
+	STC_LuckyWheel_GET					= 54; 	//幸运转盘转起来返回 
+	
+	CTS_REDMONEY_GET_INFO				= 55;   //红包详情
+	STC_REDMONEY_GET_INFO				= 56;   //红包详情
+	CTS_REDMONEY_RECEIVE				= 57;   //红包领取
+	STC_REDMONEY_RECEIVE				= 58;   //红包领取返回
+	
+}
+
+//奖励类型
+enum RewardType {
+	TANK	= 1;	//坦克
+	MEMBER	= 2;	//船员
+	GOODS	= 3;	//物品
+	GOLD	= 4;	//金币
+	IRON	= 5;	//银币
+	HONOR	= 6;	//荣誉
+	EXP		= 7;	//经验 
+	TANKEXP	= 8; 	//全局经验 
+	DIAMONDS = 9;	//钻石
+}
+
+enum ActivityType {
+	RedPacket	= 1;	//红包活动
+	DailyGrab	= 2;	//每日必秒活动
+}
+
+//奖励内容
+message RewardItem {
+	required uint32 id			= 1;	//id
+	required uint32 count		= 2;	//数量
+	required RewardType type 	= 3; 	//类型
+}
+//第几天
+message SevenLoginDay {
+	required uint32 day					= 1;	//第几天
+	required bool hadDraw 				= 2;	//是否已领取
+	required bool canDraw				= 3;	//是否可领取
+	repeated RewardItem reward			= 4; 	//奖励
+}
+
+message STC_ACTIVITY_SEVENLOGIN_MSG {
+	repeated SevenLoginDay days = 1; 	//七日列表 
+}
+
+message STC_ACTIVITY_SEVENLOGIN_DRAW_MSG {
+	required bool success	= 1;	//是否领取成功
+	required uint32 day 	= 2;	//领取哪天奖励
+	optional string info 	= 3;	//失败原因
+	
+} 
+
+enum RewardState {
+	DRAW	= 1;	//可领取
+	INIT 	= 2;	//初始状态(去完成)
+	WAIT	= 3; 	//不可领取
+	FINISH	= 4;	//已领取
+}
+
+
+//第几天
+message MonthLoginDay{
+	required uint32 day					= 1;	//第几天
+	required bool hadDraw 				= 2;	//是否已领取
+	required bool canDraw				= 3; 	//是否可领取
+	repeated RewardItem reward			= 4; 	//奖励
+	required uint32 vipLevel			= 5;    //vip等级
+}
+
+//每月
+message MonthLoginMonth{
+	required uint32 month				= 1;	//月份
+	repeated MonthLoginDay days			= 2;	//月份中的天
+}
+
+//节点奖励天
+message MonthLoginPointDay{
+	required int32 canDraw			= 1; 	//0不可领取1可以领取2已领取
+	repeated RewardItem rewards		= 2;	//奖励
+	required uint32 day				= 3;	//哪个节点天
+}
+
+message STC_ACTIVITY_MONTHLOGIN_MSG {
+	required MonthLoginMonth months 		= 1; 	//月	
+//	required MonthLoginPointDay pointDay 	= 2; 	//节点奖励天
+	required uint32 signCount				= 2;	//签到次数
+	required bool 	canSign					= 3; 	//今日是否可以签到
+	required uint32 fillSignCost			= 4;	//补签花费
+	required bool canFillSign				= 5; 	//是否可补签
+	repeated MonthLoginPointDay everyDayItem 	= 6; 	//每天的节点奖励内容
+}
+
+message STC_ACTIVITY_MONTHLOGIN_SIGN_MSG {
+	required uint32 signCount 		= 1;	//签到次数（与签到哪天是同一个值）
+	required bool 	success	  		= 2;	//本次签到是否成功
+	optional string info 	  		= 3;	//失败原因
+	required bool 	pointDayActive	= 4;	//是否激活节点奖励
+	required uint32 fillSignCost	= 5;	//补签花费
+	required bool canFillSign		= 6; 	//是否可补签
+}
+message CTS_ACTIVITY_MONTHLOGIN_POINT_DRAW_MSG{
+	required int32 day=1;//领取哪天奖励
+}
+
+message STC_ACTIVITY_MONTHLOGIN_POINT_DRAW_MSG {
+	required bool success		= 1;
+	optional string info 		= 2;
+}
+
+//条件活动
+message DailyConditionItem {
+	required uint32 id			= 1;	//编号	
+	required string name 		= 2;	//名称
+	required string desc 		= 3;	//描述
+	required RewardState state	= 4;	//奖励状态
+	repeated RewardItem rewards = 5;	//奖励列表
+	optional uint32 remainTime  = 6;	//在线时常剩余刷新时间
+	required uint32 toPage 		= 7;	//跳转页面
+	optional int32 totalTimes	= 8;	//暂时为了做每日在线显示总次数，临时加的
+}
+
+//图片活动
+message DailyPictureItem {
+	required string pictureId 	= 1;	//图片id
+	required string desc 		= 2; 	//描述
+	required uint32 toPage 		= 3;	//跳转页面
+}
+
+message ActivityItem{
+	required uint32 id		= 1;	//活动id
+	required string name	= 2;	//名称	
+	required string time	= 3;	//活动时间（开始至结束）
+	optional string desc 	= 4; 	//描述
+	required uint32 type	= 5;	//活动类型：条件活动，图片活动, 月卡
+	required uint32 flag	= 6;	//显示标签（如：火爆）
+	repeated DailyConditionItem items 		= 7; //奖励列表
+	optional DailyPictureItem pictureItem 	= 8;	
+	required uint32 sort 	= 9;		//排序
+	
+}
+
+message STC_ACTIVITY_DAILY_LIST_MSG {
+	repeated ActivityItem activitys = 1;
+}
+
+
+message CTS_ACTIVITY_DAILY_TAB_DRAW_MSG {
+	required uint32 activityId	= 1;	//活动id
+	required uint32 itemId 	= 2;	//奖励条目id
+}
+
+message STC_ACTIVITY_DAILY_TAB_DRAW_MSG {
+	required bool success 	= 1;
+	optional string info 	= 2;
+}
+
+message ActivityNoticeItem {
+	required string name	= 1;	//名称
+	required string title	= 2;	//标题
+	required string desc	= 3;	//内容
+	required uint32 toPage	= 4;	//跳转页面
+}
+
+message STC_ACTIVITY_NOTICE_LIST_MSG {
+	repeated ActivityNoticeItem notices	= 1;
+}
+
+message RedPacketNode {
+	required uint32 id 		  = 1;
+	required uint32 rmb 	  = 2;
+	required uint32 drawCount = 3;
+}
+
+//获取红包列表
+message STC_RED_PACKET_LIST_MSG {
+	required uint32 rmb			 = 1;		//活动中充值钱
+	required uint32 time		 = 2;		//剩余时间小时
+	required uint32 rechargeTip  = 3;		//充值提示
+	required uint32 drawCount	 = 4;		//剩余领取次数
+	required string desc 		 = 5;		//帮助
+	repeated RedPacketNode nodes = 6;		//奖励节点
+}
+
+//领取红包奖励
+message STC_RED_PACKET_DRAW_MSG {
+	optional uint32 drawCount 	= 1;	//剩余领取次数
+	repeated RewardItem rewards = 2;	//奖励
+	required bool success		= 3;
+	optional string info 		= 4;
+}
+
+//充值成功推送
+message STC_RED_PACKET_RECHARGE_OK_MSG {
+	required uint32 rmb 		= 1;	//累计充值
+	required uint32 drawCount 	= 2;	//剩余领取次数
+}
+
+
+message MonthCardItem {
+	required uint32 id 			= 1;	//编号 
+	required uint32 rmb			= 2;	//花费rmb
+	required RewardState state 	= 3;	//button状态
+	required uint32 remainTime 	= 4;	//月卡剩余时间
+	required string desc		= 5;	
+	required string name 		= 6;
+}
+
+
+message STC_MONTH_CARD_LIST_MSG {
+	required MonthCardItem monthCard = 1;	//月卡
+	required MonthCardItem ownCard	 = 2;	//永久卡
+}
+
+//月卡点击购买
+message CTS_MONTH_CARD_BUY_MSG {
+	required uint32 cardId 		= 2;	//月卡商品id
+}
+//月卡购买返回
+message STC_MONTH_CARD_BUY_MSG {
+	optional string gameUrl = 1;	//回调地址
+	optional string param 	= 2; 	//透传参数
+	required bool success 	= 3;
+	optional string info 	= 4;
+}
+//月卡购买失败
+message CTS_MONTH_CARD_BUY_FAIL_MSG {
+	required uint32 cardId	= 1;	//月卡商品id
+}
+
+message STC_DAILY_GRAB_LIST_MSG {
+	required uint32 grabCountLimit	= 1;	//今日疯抢上限
+	required uint32 grabCount 		= 2;	//今日疯抢次数
+	required uint32 packetCountLimit = 3;	//今日礼包上限
+	required uint32 packetCount		= 4;	//今日礼包剩余数量
+	required uint32 freeCountLimit 	= 5;	//累计疯抢次数上限
+	required uint32 freeCount 		= 6;	//累计疯抢次数
+	required uint32 freeRewardId 	= 7;	//免费奖励物品
+	required uint32 remainTime 		= 8;	//活动剩余时间
+	required uint32 grabRewardId 	= 9;	//疯抢物品
+	required bool   hadDraw 		= 10;	//是否已领取免费奖励
+	required uint32 pId				= 11;	//商品Id
+	required uint32 rmb				= 12;	//商品rmb
+	required string pDesc			= 13;	//商品描述
+	required string pName			= 14;	//商品名称
+	required bool 	canPay			= 15; 	//是否可以充值
+	required string payTimeDesc 	= 16; 	//充值时间描述
+}
+
+message STC_DAILY_GRAB_RECHARGE_MSG {
+	optional string gameUrl = 1;	//回调地址
+	optional string param 	= 2; 	//透传参数
+	required bool success 	= 3;
+	optional string info 	= 4;
+}
+
+message STC_DAILY_GRAB_DRAW_MSG {
+	required bool success 	= 1;
+	optional string info 	= 2;
+}
+
+message STC_ACTIVITY_HALL_LIST_MSG {
+	repeated ActivityType types	= 1;	//活动类型	
+}
+
+message STC_FIRST_PAY_REWS_MSG {
+	optional uint32 proId		= 1; //商品Id
+	optional string name		= 2; //商品名称
+	optional uint32 rmb			= 3; //人民币价格
+	optional string desc		= 4; //商品描述 
+	optional string backUrl		= 5; //发货地址
+	optional string extendParam = 6; //扩展参数
+	repeated RewardItem rewards = 7; //奖励信息
+	required RewardState state 	= 8;	//奖励状态
+	required uint32 remainTime	= 9;	//活动剩余时间
+}
+
+message STC_FIRST_PAY_DRAW_MSG {
+	required bool success		= 1;
+	optional string info		= 2;
+	repeated RewardItem rewards = 3;
+}
+
+message STC_KEEP_ONLINE_REWS_MSG {
+	optional uint32 vipLevel		= 1; //玩家当前VIP等级
+	optional uint32 upValue			= 2; //上限值
+	optional float addValueBySec 	= 3; //每秒增加值
+	optional uint32 lastDrawTime 	= 4; //上次领取时间
+	optional uint32 curValue 		= 5; //当前经验值
+}
+
+message STC_KEEP_ONLINE_DRAW_MSG {
+	required bool success		= 1;
+	optional string info		= 2;
+	repeated RewardItem rewards = 3;
+}
+
+message CTS_BIND_TANK1_ACCOUNT_MSG {
+	required string area			= 1;		//分区
+	required string accountName		= 2;		//角色名
+}
+
+message STC_BIND_TANK1_ACCOUNT_MSG {
+	required bool success		= 1;
+	optional string info		= 2;
+}
+
+message STC_BIND_TANK1_ACCOUNT_STATE_MSG {
+	required RewardState state	= 1;	//状态
+}
+
+
+
+//幸运转盘
+message CTS_LuckyWheel_Info_MSG {
+
+}
+//幸运转盘返回
+message STC_LuckyWheel_Info_MSG {
+	optional int32 freeCount		=1;//剩余免费次数
+	optional int32 needDiamond		=2;//要多少钻石
+	optional int32 restFreeTime 	=3;// 转盘剩余冷却时间  单位 秒
+	repeated RewardItem items 		=4;//获得物品
+}
+
+
+//幸运转盘  转起来
+message CTS_LuckyWheel_GET_MSG {
+	required string type = 1; //1钻石  0 免费
+}
+//幸运转盘  转起来 返回
+message STC_LuckyWheel_GET_MSG {
+	required bool 	success	  		= 1;	//
+	optional string info 	  		= 2;	//失败原因
+	optional int32 index			= 3;	//获得物品index
+
+	
+}
+
+//红包体
+message REDMONEY_INFO {
+
+	optional int32 roleId =1;//角色ID
+	optional string roleName =2;//角色名
+	optional int32 dia =4;//钻石
+	optional int32 gold =5;//金币
+	optional int32 iron =6;//银币 
+	optional int32 best	=7;//手气最佳为1，普通为0
+	optional int32 tankId=8;//坦克ID
+}
+
+//红包详情
+message CTS_REDMONEY_GET_INFO_MSG {
+	required int32 roleId =1;//
+	required string unqueId =2;//战场唯一ID,在战报中获取 
+}
+//红包详情返回
+message  STC_REDMONEY_GET_INFO_MSG {
+	repeated REDMONEY_INFO infos =1;
+}
+//红包领取
+message CTS_REDMONEY_RECEIVE_MSG {
+	required int32 roleId =1;//
+	required string unqueId =2;//战场唯一ID,在战报中获取 
+}
+//红包领取返回
+message STC_REDMONEY_RECEIVE_MSG {
+	required bool success =1;	//
+	optional int32 dia =2;
+	optional int32 gold =3;
+	optional int32 iron =4;
+}
+
+

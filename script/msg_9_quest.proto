@@ -1,0 +1,115 @@
+/********************************************************************
+*
+*	filename: 	msg_9_quest.proto
+*	purpose:	任务
+*
+*********************************************************************/
+
+
+package PROTO_QUEST;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.ourpalm.tank.message";
+option java_outer_classname = "QUEST_MSG";
+
+enum CMD_TYPE {
+	CMD_TYPE_QUEST = 9;
+}
+
+enum CMD_ID {
+	CTS_QUEST_LIST 			= 1; //日常任务列表(空消息)
+	CTS_QUEST_DRAW 			= 2; //日常领取奖励
+	
+	STC_QUEST_LIST 			= 3; //日常任务列表
+	STC_QUEST_DRAW 			= 4; //日常领取奖励
+	
+	
+	CTS_MASTER_QUEST_LIST	= 6;	//主线任务列表（空消息）
+	STC_MASTER_QUEST_LIST	= 7;	//主线领取奖励	
+	
+	CTS_MASTER_QUEST_DRAW	= 8;	//领取任务奖励
+	STC_MASTER_QUEST_DRAW	= 9;	//领取任务奖励返回
+	
+	
+	CTS_ACTIVE_DRAW			= 10;	//领取活跃奖励
+	STC_ACTIVE_DRAW			= 11;	//返回领取奖励
+}
+
+enum QuestState {
+	accept		= 1; //进行中
+	reward		= 2; //完成，未领奖
+	finish		= 3; //已领奖
+}
+
+message QuestItem {
+	required uint32 id 			= 1; //ID
+	required uint32 progress 	= 2; //当前进度
+	required QuestState state 	= 4; //状态
+	required uint32	remainCount	= 5; //还可以完成几次
+}
+
+//领取奖励
+message CTS_QUEST_DRAW_MSG {
+	required uint32 id = 1; //任务ID
+}
+
+
+
+//活跃奖励信息
+message ActiveRewardsItem {
+	required uint32 num			= 1;	//活跃点数
+	required string name		= 2;	//礼包名称
+	required QuestState state	= 3;	//状态
+	optional uint32 gold		= 4;	//金币
+	optional uint32 iron		= 5;	//银币
+	optional uint32 exp			= 6;	//经验
+	optional uint32 diamond		= 7;	//钻石
+}
+
+//任务列表
+message STC_QUEST_LIST_MSG {
+	required uint32	dayActive					= 1; //今日活跃点
+	repeated ActiveRewardsItem activeRewards	= 2; //活跃奖励
+	repeated QuestItem questItems 				= 3; //任务列表
+	required uint32 weekActive					= 4; //本周活跃点
+	repeated ActiveRewardsItem weekRewards		= 5; //周活跃奖励
+}
+
+//领取任务奖励
+message STC_QUEST_DRAW_MSG {
+	required bool success 			= 1;
+	required string info  			= 2;
+	optional uint32 dayActive		= 3;	//今日活跃点
+	optional uint32 weekActive		= 4;	//周活跃点
+	optional uint32 questId			= 5;	//任务ID 
+}
+
+
+message CTS_MASTER_QUEST_DRAW_MSG {
+	required uint32 id = 1; 
+}
+
+message STC_MASTER_QUEST_DRAW_MSG {
+	required bool success = 1;
+	optional string info  = 2;
+}
+
+message STC_MASTER_QUEST_LIST_MSG {
+	repeated QuestItem items = 1;
+}
+
+
+//领取活跃奖励
+message CTS_ACTIVE_DRAW_MSG {
+	required uint32 type			= 1; //奖励类型 1: 今日  2: 本周
+	required uint32 num				= 2; //领取对应活跃点
+}
+
+//返回领取活跃奖励
+message STC_ACTIVE_DRAW_MSG {
+	required bool success = 1;
+	optional string info  = 2;
+	optional uint32 num	  = 3; //活跃点数
+	optional uint32 type  = 4; //奖励类型 1: 今日  2: 本周
+}
+
