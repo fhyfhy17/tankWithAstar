@@ -31,6 +31,6 @@ gen### Java template
 hs_err_pid*
 
 /*/target/
-target/*/
+target/*
 # temp file
 ~$*
