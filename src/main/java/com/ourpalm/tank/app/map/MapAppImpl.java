@@ -1,19 +1,5 @@
 package com.ourpalm.tank.app.map;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.springframework.core.io.ClassPathResource;
-
 import com.alibaba.fastjson.JSON;
 import com.ourpalm.core.log.LogCore;
 import com.ourpalm.core.util.Cat;
@@ -27,8 +13,6 @@ import com.ourpalm.tank.app.map.state.camp.CampStateMachineFactory;
 import com.ourpalm.tank.domain.RoleAccount;
 import com.ourpalm.tank.domain.RoleBattle;
 import com.ourpalm.tank.domain.RoleConnect;
-import com.ourpalm.tank.domain.RoleTank;
-import com.ourpalm.tank.domain.RoleWarInfo;
 import com.ourpalm.tank.message.MATCH_MSG;
 import com.ourpalm.tank.message.MATCH_MSG.Location;
 import com.ourpalm.tank.message.MATCH_MSG.MatchItem;
@@ -52,8 +36,6 @@ import com.ourpalm.tank.template.MapAiPointTemplate;
 import com.ourpalm.tank.template.MapBirthTemplate;
 import com.ourpalm.tank.template.MapDataTemplate;
 import com.ourpalm.tank.template.MapTemplate;
-import com.ourpalm.tank.template.PreseasonTemplate;
-import com.ourpalm.tank.type.BattleRewardType;
 import com.ourpalm.tank.type.BodyType;
 import com.ourpalm.tank.type.XlsSheetType;
 import com.ourpalm.tank.util.XlsPojoUtil;
@@ -65,6 +47,21 @@ import com.ourpalm.tank.vo.PerishMapInstance;
 import com.ourpalm.tank.vo.SportMapInstance;
 import com.ourpalm.tank.vo.result.CampEnterResult;
 import com.ourpalm.tank.vo.result.Result;
+import org.slf4j.Logger;
+import org.springframework.core.io.ClassPathResource;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MapAppImpl implements MapApp{
 	
@@ -399,7 +396,7 @@ public class MapAppImpl implements MapApp{
 				this.allMap.put(template.getId(), template);
 			}
 		}catch(Exception e){
-			LogCore.startup.error(String.format("加载{},{}异常 {}", sourceFile, sheetName), e);
+			LogCore.startup.error("加载{},{}异常", sourceFile, sheetName, e);
 		}
 	}
 	@Override
@@ -446,7 +443,7 @@ public class MapAppImpl implements MapApp{
 				_list.add(template);
 			}
 		}catch(Exception e){
-			LogCore.startup.error(String.format("加载{},{}异常 {}", sourceFile, sheetName), e);
+			LogCore.startup.error("加载{},{}异常", sourceFile, sheetName, e);
 		}
 	}
 	
@@ -469,7 +466,7 @@ public class MapAppImpl implements MapApp{
 				templateList.add(template);
 			}
 		}catch(Exception e){
-			LogCore.startup.error(String.format("加载{},{}异常 {}", sourceFile, sheetName), e);
+			LogCore.startup.error("加载{},{}异常", sourceFile, sheetName, e);
 		}
 	}
 	
@@ -493,7 +490,7 @@ public class MapAppImpl implements MapApp{
 				templateList.add(template);
 			}
 		}catch(Exception e){
-			LogCore.startup.error(String.format("加载{},{}异常 {}", sourceFile, sheetName), e);
+			LogCore.startup.error("加载{},{}异常", sourceFile, sheetName, e);
 		}
 	}
 	
@@ -506,7 +503,7 @@ public class MapAppImpl implements MapApp{
 			this.battleTeachTemplate = list.get(0);
 			this.battleTeachTemplate.init();
 		} catch (Exception e) {
-			LogCore.startup.error(String.format("加载配置表%s-%s发生异常...", sourceFile, sheetName), e);
+			LogCore.startup.error("加载{},{}异常", sourceFile, sheetName, e);
 		}
 	}
 	
@@ -520,7 +517,7 @@ public class MapAppImpl implements MapApp{
 				template.init();
 			}
 		} catch (Exception e){
-			LogCore.startup.error(String.format("加载配置表%s-%s发生异常...", sourceFile, sheetName), e);
+			LogCore.startup.error("加载{},{}异常", sourceFile, sheetName, e);
 		}
 	}
 	
@@ -532,15 +529,15 @@ public class MapAppImpl implements MapApp{
 		try{
 			ClassPathResource res = new ClassPathResource(mapDataPath);
 			File file = res.getFile();
-			for(File fileData : file.listFiles()){
+			for(File fileData : Objects.requireNonNull(file.listFiles())){
 				fileName = fileData.getName();
 				if(!fileName.endsWith(".json")){
 					continue;
 				}
-				InputStreamReader read = new InputStreamReader(new FileInputStream(fileData), "utf-8");
+				InputStreamReader read = new InputStreamReader(new FileInputStream(fileData),StandardCharsets.UTF_8);
 				BufferedReader br = new BufferedReader(read);
-				StringBuffer strBuf = new StringBuffer();
-				String str = null;
+				StringBuilder strBuf = new StringBuilder();
+				String str ;
 				while((str = br.readLine()) != null){
 					if(Util.isEmpty(str)){
 						continue;
@@ -553,7 +550,7 @@ public class MapAppImpl implements MapApp{
 			}
 			
 		}catch(Exception e){
-			LogCore.startup.error("加载地图网格数据异常...fileName = "+fileName, e);
+			LogCore.startup.error("加载地图网格数据异常...fileName = {}",fileName, e);
 		}
 	}
 	
@@ -564,12 +561,12 @@ public class MapAppImpl implements MapApp{
 		try{
 			ClassPathResource res = new ClassPathResource(aiPointPah);
 			File file = res.getFile();
-			for(File fileData : file.listFiles()){
+			for(File fileData : Objects.requireNonNull(file.listFiles())){
 				fileName = fileData.getName();
 				if(!fileName.endsWith(".bytes")){
 					continue;
 				}
-				InputStreamReader read = new InputStreamReader(new FileInputStream(fileData), "utf-8");
+				InputStreamReader read = new InputStreamReader(new FileInputStream(fileData),StandardCharsets.UTF_8);
 				BufferedReader br = new BufferedReader(read);
 				String str = null;
 				while((str = br.readLine()) != null){
@@ -588,7 +585,7 @@ public class MapAppImpl implements MapApp{
 				br.close();
 			}
 		}catch(Exception e){
-			LogCore.startup.error("加载AI目标寻路点数据异常...fileName = "+fileName, e);
+			LogCore.startup.error("加载AI目标寻路点数据异常...fileName ={} ",fileName, e);
 		}
 	}
 	
@@ -599,7 +596,7 @@ public class MapAppImpl implements MapApp{
 		try{
 			ClassPathResource res = new ClassPathResource(this.mapHeightPath);
 			File file = res.getFile();
-			for(File fileData : file.listFiles()){
+			for(File fileData : Objects.requireNonNull(file.listFiles())){
 				fileName = fileData.getName();
 				if(!fileName.endsWith(".raw")){
 					continue;
@@ -615,7 +612,7 @@ public class MapAppImpl implements MapApp{
 				this.allHeightMap.put(mapId, readHightMapData);
 			}
 		}catch(Exception e){
-			LogCore.startup.error("加载地图高度数据异常...fileName = "+fileName, e);
+			LogCore.startup.error("加载地图高度数据异常...fileName = {}",fileName, e);
 		}
 	}
 	
@@ -634,7 +631,7 @@ public class MapAppImpl implements MapApp{
 				birthList.add(template);
 			}
 		} catch (Exception e){
-			LogCore.startup.error(String.format("加载配置表%s-%s发生异常...", sourceFile, sheetName), e);
+			LogCore.startup.error("加载{},{}异常", sourceFile, sheetName, e);
 		}
 	}
 	
@@ -645,7 +642,7 @@ public class MapAppImpl implements MapApp{
 		try{
 			this.battleHandupMap = XlsPojoUtil.sheetToGenericMap(sourceFile, sheetName, BattleHandUpTemplate.class);
 		}catch(Exception e){
-			LogCore.startup.error(String.format("加载配置表%s-%s发生异常...", sourceFile, sheetName), e);
+			LogCore.startup.error("加载{},{}异常", sourceFile, sheetName, e);
 		}
 	}
 	
@@ -824,9 +821,9 @@ public class MapAppImpl implements MapApp{
 			String[] locationes = template.getLocation().split(Cat.comma);
 			Location location = Location.newBuilder()
 					.setDir(template.getBirthDir())
-					.setX(Float.valueOf(locationes[0]))
-					.setY(Float.valueOf(locationes[1]))
-					.setZ(Float.valueOf(locationes[2]))
+					.setX(Float.parseFloat(locationes[0]))
+					.setY(Float.parseFloat(locationes[1]))
+					.setZ(Float.parseFloat(locationes[2]))
 					.build();
 			npcTank.setBirthLocation(location);
 			npcTank.setRoleName(template.getName());
